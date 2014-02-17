@@ -159,7 +159,7 @@ namespace processing.core
 		/// Full name of the Java version (i.e. 1.5.0_11).
 		/// Prior to 0125, this was only the first three digits.
 		/// </summary>
-		public static readonly string javaVersionName = System.getProperty("java.version");
+		public static readonly string javaVersionName = "Unity";
 
 		/// <summary>
 		/// Version of Java that's in use, whether 1.1 or 1.3 or whatever,
@@ -195,7 +195,7 @@ namespace processing.core
 
 		static PApplet()
 		{
-			string osname = System.getProperty("os.name");
+			string osname = Application.platform.ToString();
 
 			if (osname.IndexOf("Mac") != -1)
 			{
@@ -881,7 +881,8 @@ namespace processing.core
 			}
 
 			// send tab keys through to the PApplet
-			FocusTraversalKeysEnabled = false;
+			// TODO: FocusTraversalKeysEnabled not found. check if necessary
+			//FocusTraversalKeysEnabled = false;
 
 			//millisOffset = System.currentTimeMillis(); // moved to the variable declaration
 
@@ -890,7 +891,8 @@ namespace processing.core
 			// this will be cleared by draw() if it is not overridden
 			looping = true;
 			redraw_Renamed = true; // draw this guy once
-			firstMouse = true;
+			// TODO: obsolete
+			//firstMouse = true;
 
 			// these need to be inited before setup
 			//    sizeMethods = new RegisteredMethods();
@@ -905,26 +907,29 @@ namespace processing.core
 
 			try
 			{
-				AppletContext();
-				online = true;
+				//AppletContext didn't found
+//				AppletContext();
+				// TODO: obsolete
+//				online = true;
 			}
 			catch (System.NullReferenceException)
 			{
-				online = false;
+				// TODO: obsolete
+//				online = false;
 			}
 
 			try
 			{
 				if (sketchPath_Renamed == null)
 				{
-					sketchPath_Renamed = System.getProperty("user.dir");
+					sketchPath_Renamed = Application.persistentDataPath;
 				}
 			} // may be a security problem
 			catch (Exception)
 			{
 			}
 
-			Dimension size = Size;
+			UnityEngine.Rect size = Size;
 			if ((size.width != 0) && (size.height != 0))
 			{
 				// When this PApplet is embedded inside a Java application with other
@@ -1216,7 +1221,7 @@ namespace processing.core
 			internal object[] objects;
 			// Because the Method comes from the class being called,
 			// it will be unique for most, if not all, objects.
-			internal Method[] methods;
+			internal System.Reflection.MethodInfo[] methods;
 			internal object[] emptyArgs = new object[] { };
 
 
@@ -1264,7 +1269,7 @@ namespace processing.core
 			}
 
 
-			internal virtual void add(object @object, Method method)
+			internal virtual void add(object @object, System.Reflection.MethodInfo method)
 			{
 				if (findIndex(@object) == -1)
 				{
@@ -3129,720 +3134,723 @@ namespace processing.core
 			}
 		*/
 
+		//TODO: impement mouse events
 
 		/// <summary>
 		/// Figure out how to process a mouse event. When loop() has been
 		/// called, the events will be queued up until drawing is complete.
 		/// If noLoop() has been called, then events will happen immediately.
 		/// </summary>
-		protected internal virtual void nativeMouseEvent(java.awt.@event.MouseEvent nativeEvent)
-		{
-			// the 'amount' is the number of button clicks for a click event,
-			// or the number of steps/clicks on the wheel for a mouse wheel event.
-			int peCount = nativeEvent.ClickCount;
+//		protected internal virtual void nativeMouseEvent(java.awt.@event.MouseEvent nativeEvent)
+//		{
+//			// the 'amount' is the number of button clicks for a click event,
+//			// or the number of steps/clicks on the wheel for a mouse wheel event.
+//			int peCount = nativeEvent.ClickCount;
+//
+//			int peAction = 0;
+//			switch (nativeEvent.ID)
+//			{
+//			case java.awt.@event.MouseEvent.MOUSE_PRESSED:
+//				peAction = MouseEvent.PRESS;
+//				break;
+//			case java.awt.@event.MouseEvent.MOUSE_RELEASED:
+//				peAction = MouseEvent.RELEASE;
+//				break;
+//			case java.awt.@event.MouseEvent.MOUSE_CLICKED:
+//				peAction = MouseEvent.CLICK;
+//				break;
+//			case java.awt.@event.MouseEvent.MOUSE_DRAGGED:
+//				peAction = MouseEvent.DRAG;
+//				break;
+//			case java.awt.@event.MouseEvent.MOUSE_MOVED:
+//				peAction = MouseEvent.MOVE;
+//				break;
+//			case java.awt.@event.MouseEvent.MOUSE_ENTERED:
+//				peAction = MouseEvent.ENTER;
+//				break;
+//			case java.awt.@event.MouseEvent.MOUSE_EXITED:
+//				peAction = MouseEvent.EXIT;
+//				break;
+//			//case java.awt.event.MouseWheelEvent.WHEEL_UNIT_SCROLL:
+//			case java.awt.@event.MouseEvent.MOUSE_WHEEL:
+//				peAction = MouseEvent.WHEEL;
+//				/*
+//				if (preciseWheelMethod != null) {
+//					try {
+//						peAmount = ((Double) preciseWheelMethod.invoke(nativeEvent, (Object[]) null)).floatValue();
+//						} catch (Exception e) {
+//							preciseWheelMethod = null;
+//						}
+//					}
+//				*/
+//				peCount = ((MouseWheelEvent) nativeEvent).WheelRotation;
+//				break;
+//			}
+//
+//			//System.out.println(nativeEvent);
+//			//int modifiers = nativeEvent.getModifiersEx();
+//			// If using getModifiersEx(), the regular modifiers don't set properly.
+//			int modifiers = nativeEvent.Modifiers;
+//
+//			int peModifiers = modifiers & (InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK | InputEvent.META_MASK | InputEvent.ALT_MASK);
+//
+//			// Windows and OS X seem to disagree on how to handle this. Windows only
+//			// sets BUTTON1_DOWN_MASK, while OS X seems to set BUTTON1_MASK.
+//			// This is an issue in particular with mouse release events:
+//			// http://code.google.com/p/processing/issues/detail?id=1294
+//			// The fix for which led to a regression (fixed here by checking both):
+//			// http://code.google.com/p/processing/issues/detail?id=1332
+//			int peButton = 0;
+//			//    if ((modifiers & InputEvent.BUTTON1_MASK) != 0 ||
+//			//        (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+//			//      peButton = LEFT;
+//			//    } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0 ||
+//			//               (modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+//			//      peButton = CENTER;
+//			//    } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0 ||
+//			//               (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
+//			//      peButton = RIGHT;
+//			//    }
+//			if ((modifiers & InputEvent.BUTTON1_MASK) != 0)
+//			{
+//				peButton = PConstants_Fields.LEFT;
+//			}
+//			else if ((modifiers & InputEvent.BUTTON2_MASK) != 0)
+//			{
+//				peButton = PConstants_Fields.CENTER;
+//			}
+//			else if ((modifiers & InputEvent.BUTTON3_MASK) != 0)
+//			{
+//				peButton = PConstants_Fields.RIGHT;
+//			}
+//
+//			// If running on macos, allow ctrl-click as right mouse. Prior to 0215,
+//			// this used isPopupTrigger() on the native event, but that doesn't work
+//			// for mouseClicked and mouseReleased (or others).
+//			if (platform == PConstants_Fields.MACOSX)
+//			{
+//				//if (nativeEvent.isPopupTrigger()) {
+//				if ((modifiers & InputEvent.CTRL_MASK) != 0)
+//				{
+//					peButton = PConstants_Fields.RIGHT;
+//				}
+//			}
+//
+//			postEvent(new MouseEvent(nativeEvent, nativeEvent.When, peAction, peModifiers, nativeEvent.X, nativeEvent.Y, peButton, peCount));
+//		}
+//
+//
+//		/// <summary>
+//		/// If you override this or any function that takes a "MouseEvent e"
+//		/// without calling its super.mouseXxxx() then mouseX, mouseY,
+//		/// mousePressed, and mouseEvent will no longer be set.
+//		///
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mousePressed(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseReleased(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseClicked(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseEntered(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseExited(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseDragged(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseMoved(java.awt.@event.MouseEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseWheelMoved(MouseWheelEvent e)
+//		{
+//			nativeMouseEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from mousePressed.xml )
+//		///
+//		/// The <b>mousePressed()</b> function is called once after every time a
+//		/// mouse button is pressed. The <b>mouseButton</b> variable (see the
+//		/// related reference entry) can be used to determine which button has been pressed.
+//		///
+//		/// ( end auto-generated )
+//		/// <h3>Advanced</h3>
+//		///
+//		/// If you must, use
+//		/// int button = mouseEvent.getButton();
+//		/// to figure out which button was clicked. It will be one of:
+//		/// MouseEvent.BUTTON1, MouseEvent.BUTTON2, MouseEvent.BUTTON3
+//		/// Note, however, that this is completely inconsistent across
+//		/// platforms.
+//		/// @webref input:mouse </summary>
+//		/// <seealso cref= PApplet#mouseX </seealso>
+//		/// <seealso cref= PApplet#mouseY </seealso>
+//		/// <seealso cref= PApplet#mousePressed </seealso>
+//		/// <seealso cref= PApplet#mouseButton </seealso>
+//		/// <seealso cref= PApplet#mouseReleased() </seealso>
+//		/// <seealso cref= PApplet#mouseMoved() </seealso>
+//		/// <seealso cref= PApplet#mouseDragged() </seealso>
+//		public virtual void mousePressed()
+//		{
+//		}
+//
+//
+//		public virtual void mousePressed(MouseEvent @event)
+//		{
+//			mousePressed();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from mouseReleased.xml )
+//		///
+//		/// The <b>mouseReleased()</b> function is called every time a mouse button
+//		/// is released.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:mouse </summary>
+//		/// <seealso cref= PApplet#mouseX </seealso>
+//		/// <seealso cref= PApplet#mouseY </seealso>
+//		/// <seealso cref= PApplet#mousePressed </seealso>
+//		/// <seealso cref= PApplet#mouseButton </seealso>
+//		/// <seealso cref= PApplet#mousePressed() </seealso>
+//		/// <seealso cref= PApplet#mouseMoved() </seealso>
+//		/// <seealso cref= PApplet#mouseDragged() </seealso>
+//		public virtual void mouseReleased()
+//		{
+//		}
+//
+//
+//		public virtual void mouseReleased(MouseEvent @event)
+//		{
+//			mouseReleased();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from mouseClicked.xml )
+//		///
+//		/// The <b>mouseClicked()</b> function is called once after a mouse button
+//		/// has been pressed and then released.
+//		///
+//		/// ( end auto-generated )
+//		/// <h3>Advanced</h3>
+//		/// When the mouse is clicked, mousePressed() will be called,
+//		/// then mouseReleased(), then mouseClicked(). Note that
+//		/// mousePressed is already false inside of mouseClicked().
+//		/// @webref input:mouse </summary>
+//		/// <seealso cref= PApplet#mouseX </seealso>
+//		/// <seealso cref= PApplet#mouseY </seealso>
+//		/// <seealso cref= PApplet#mouseButton </seealso>
+//		/// <seealso cref= PApplet#mousePressed() </seealso>
+//		/// <seealso cref= PApplet#mouseReleased() </seealso>
+//		/// <seealso cref= PApplet#mouseMoved() </seealso>
+//		/// <seealso cref= PApplet#mouseDragged() </seealso>
+//		public virtual void mouseClicked()
+//		{
+//		}
+//
+//
+//		public virtual void mouseClicked(MouseEvent @event)
+//		{
+//			mouseClicked();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from mouseDragged.xml )
+//		///
+//		/// The <b>mouseDragged()</b> function is called once every time the mouse
+//		/// moves and a mouse button is pressed.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:mouse </summary>
+//		/// <seealso cref= PApplet#mouseX </seealso>
+//		/// <seealso cref= PApplet#mouseY </seealso>
+//		/// <seealso cref= PApplet#mousePressed </seealso>
+//		/// <seealso cref= PApplet#mousePressed() </seealso>
+//		/// <seealso cref= PApplet#mouseReleased() </seealso>
+//		/// <seealso cref= PApplet#mouseMoved() </seealso>
+//		public virtual void mouseDragged()
+//		{
+//		}
+//
+//
+//		public virtual void mouseDragged(MouseEvent @event)
+//		{
+//			mouseDragged();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from mouseMoved.xml )
+//		///
+//		/// The <b>mouseMoved()</b> function is called every time the mouse moves
+//		/// and a mouse button is not pressed.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:mouse </summary>
+//		/// <seealso cref= PApplet#mouseX </seealso>
+//		/// <seealso cref= PApplet#mouseY </seealso>
+//		/// <seealso cref= PApplet#mousePressed </seealso>
+//		/// <seealso cref= PApplet#mousePressed() </seealso>
+//		/// <seealso cref= PApplet#mouseReleased() </seealso>
+//		/// <seealso cref= PApplet#mouseDragged() </seealso>
+//		public virtual void mouseMoved()
+//		{
+//		}
+//
+//
+//		public virtual void mouseMoved(MouseEvent @event)
+//		{
+//			mouseMoved();
+//		}
+//
+//
+//		public virtual void mouseEntered()
+//		{
+//		}
+//
+//
+//		public virtual void mouseEntered(MouseEvent @event)
+//		{
+//			mouseEntered();
+//		}
+//
+//
+//		public virtual void mouseExited()
+//		{
+//		}
+//
+//
+//		public virtual void mouseExited(MouseEvent @event)
+//		{
+//			mouseExited();
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void mouseWheel()
+//		{
+//		}
+//
+//		/// <summary>
+//		/// The event.getAmount() method returns negative values if the mouse wheel
+//		/// if rotated up or away from the user and positive in the other direction.
+//		/// On OS X with "natural" scrolling enabled, the values are opposite.
+//		///
+//		/// @webref input:mouse </summary>
+//		/// <param name="event"> the MouseEvent </param>
+//		public virtual void mouseWheel(MouseEvent @event)
+//		{
+//			mouseWheel();
+//		}
 
-			int peAction = 0;
-			switch (nativeEvent.ID)
-			{
-			case java.awt.@event.MouseEvent.MOUSE_PRESSED:
-				peAction = MouseEvent.PRESS;
-				break;
-			case java.awt.@event.MouseEvent.MOUSE_RELEASED:
-				peAction = MouseEvent.RELEASE;
-				break;
-			case java.awt.@event.MouseEvent.MOUSE_CLICKED:
-				peAction = MouseEvent.CLICK;
-				break;
-			case java.awt.@event.MouseEvent.MOUSE_DRAGGED:
-				peAction = MouseEvent.DRAG;
-				break;
-			case java.awt.@event.MouseEvent.MOUSE_MOVED:
-				peAction = MouseEvent.MOVE;
-				break;
-			case java.awt.@event.MouseEvent.MOUSE_ENTERED:
-				peAction = MouseEvent.ENTER;
-				break;
-			case java.awt.@event.MouseEvent.MOUSE_EXITED:
-				peAction = MouseEvent.EXIT;
-				break;
-			//case java.awt.event.MouseWheelEvent.WHEEL_UNIT_SCROLL:
-			case java.awt.@event.MouseEvent.MOUSE_WHEEL:
-				peAction = MouseEvent.WHEEL;
-				/*
-				if (preciseWheelMethod != null) {
-					try {
-						peAmount = ((Double) preciseWheelMethod.invoke(nativeEvent, (Object[]) null)).floatValue();
-						} catch (Exception e) {
-							preciseWheelMethod = null;
-						}
-					}
-				*/
-				peCount = ((MouseWheelEvent) nativeEvent).WheelRotation;
-				break;
-			}
 
-			//System.out.println(nativeEvent);
-			//int modifiers = nativeEvent.getModifiersEx();
-			// If using getModifiersEx(), the regular modifiers don't set properly.
-			int modifiers = nativeEvent.Modifiers;
-
-			int peModifiers = modifiers & (InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK | InputEvent.META_MASK | InputEvent.ALT_MASK);
-
-			// Windows and OS X seem to disagree on how to handle this. Windows only
-			// sets BUTTON1_DOWN_MASK, while OS X seems to set BUTTON1_MASK.
-			// This is an issue in particular with mouse release events:
-			// http://code.google.com/p/processing/issues/detail?id=1294
-			// The fix for which led to a regression (fixed here by checking both):
-			// http://code.google.com/p/processing/issues/detail?id=1332
-			int peButton = 0;
-			//    if ((modifiers & InputEvent.BUTTON1_MASK) != 0 ||
-			//        (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-			//      peButton = LEFT;
-			//    } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0 ||
-			//               (modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
-			//      peButton = CENTER;
-			//    } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0 ||
-			//               (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
-			//      peButton = RIGHT;
-			//    }
-			if ((modifiers & InputEvent.BUTTON1_MASK) != 0)
-			{
-				peButton = PConstants_Fields.LEFT;
-			}
-			else if ((modifiers & InputEvent.BUTTON2_MASK) != 0)
-			{
-				peButton = PConstants_Fields.CENTER;
-			}
-			else if ((modifiers & InputEvent.BUTTON3_MASK) != 0)
-			{
-				peButton = PConstants_Fields.RIGHT;
-			}
-
-			// If running on macos, allow ctrl-click as right mouse. Prior to 0215,
-			// this used isPopupTrigger() on the native event, but that doesn't work
-			// for mouseClicked and mouseReleased (or others).
-			if (platform == PConstants_Fields.MACOSX)
-			{
-				//if (nativeEvent.isPopupTrigger()) {
-				if ((modifiers & InputEvent.CTRL_MASK) != 0)
-				{
-					peButton = PConstants_Fields.RIGHT;
-				}
-			}
-
-			postEvent(new MouseEvent(nativeEvent, nativeEvent.When, peAction, peModifiers, nativeEvent.X, nativeEvent.Y, peButton, peCount));
-		}
-
-
-		/// <summary>
-		/// If you override this or any function that takes a "MouseEvent e"
-		/// without calling its super.mouseXxxx() then mouseX, mouseY,
-		/// mousePressed, and mouseEvent will no longer be set.
-		///
-		/// @nowebref
-		/// </summary>
-		public virtual void mousePressed(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseReleased(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseClicked(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseEntered(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseExited(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseDragged(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseMoved(java.awt.@event.MouseEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseWheelMoved(MouseWheelEvent e)
-		{
-			nativeMouseEvent(e);
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from mousePressed.xml )
-		///
-		/// The <b>mousePressed()</b> function is called once after every time a
-		/// mouse button is pressed. The <b>mouseButton</b> variable (see the
-		/// related reference entry) can be used to determine which button has been pressed.
-		///
-		/// ( end auto-generated )
-		/// <h3>Advanced</h3>
-		///
-		/// If you must, use
-		/// int button = mouseEvent.getButton();
-		/// to figure out which button was clicked. It will be one of:
-		/// MouseEvent.BUTTON1, MouseEvent.BUTTON2, MouseEvent.BUTTON3
-		/// Note, however, that this is completely inconsistent across
-		/// platforms.
-		/// @webref input:mouse </summary>
-		/// <seealso cref= PApplet#mouseX </seealso>
-		/// <seealso cref= PApplet#mouseY </seealso>
-		/// <seealso cref= PApplet#mousePressed </seealso>
-		/// <seealso cref= PApplet#mouseButton </seealso>
-		/// <seealso cref= PApplet#mouseReleased() </seealso>
-		/// <seealso cref= PApplet#mouseMoved() </seealso>
-		/// <seealso cref= PApplet#mouseDragged() </seealso>
-		public virtual void mousePressed()
-		{
-		}
-
-
-		public virtual void mousePressed(MouseEvent @event)
-		{
-			mousePressed();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from mouseReleased.xml )
-		///
-		/// The <b>mouseReleased()</b> function is called every time a mouse button
-		/// is released.
-		///
-		/// ( end auto-generated )
-		/// @webref input:mouse </summary>
-		/// <seealso cref= PApplet#mouseX </seealso>
-		/// <seealso cref= PApplet#mouseY </seealso>
-		/// <seealso cref= PApplet#mousePressed </seealso>
-		/// <seealso cref= PApplet#mouseButton </seealso>
-		/// <seealso cref= PApplet#mousePressed() </seealso>
-		/// <seealso cref= PApplet#mouseMoved() </seealso>
-		/// <seealso cref= PApplet#mouseDragged() </seealso>
-		public virtual void mouseReleased()
-		{
-		}
-
-
-		public virtual void mouseReleased(MouseEvent @event)
-		{
-			mouseReleased();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from mouseClicked.xml )
-		///
-		/// The <b>mouseClicked()</b> function is called once after a mouse button
-		/// has been pressed and then released.
-		///
-		/// ( end auto-generated )
-		/// <h3>Advanced</h3>
-		/// When the mouse is clicked, mousePressed() will be called,
-		/// then mouseReleased(), then mouseClicked(). Note that
-		/// mousePressed is already false inside of mouseClicked().
-		/// @webref input:mouse </summary>
-		/// <seealso cref= PApplet#mouseX </seealso>
-		/// <seealso cref= PApplet#mouseY </seealso>
-		/// <seealso cref= PApplet#mouseButton </seealso>
-		/// <seealso cref= PApplet#mousePressed() </seealso>
-		/// <seealso cref= PApplet#mouseReleased() </seealso>
-		/// <seealso cref= PApplet#mouseMoved() </seealso>
-		/// <seealso cref= PApplet#mouseDragged() </seealso>
-		public virtual void mouseClicked()
-		{
-		}
-
-
-		public virtual void mouseClicked(MouseEvent @event)
-		{
-			mouseClicked();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from mouseDragged.xml )
-		///
-		/// The <b>mouseDragged()</b> function is called once every time the mouse
-		/// moves and a mouse button is pressed.
-		///
-		/// ( end auto-generated )
-		/// @webref input:mouse </summary>
-		/// <seealso cref= PApplet#mouseX </seealso>
-		/// <seealso cref= PApplet#mouseY </seealso>
-		/// <seealso cref= PApplet#mousePressed </seealso>
-		/// <seealso cref= PApplet#mousePressed() </seealso>
-		/// <seealso cref= PApplet#mouseReleased() </seealso>
-		/// <seealso cref= PApplet#mouseMoved() </seealso>
-		public virtual void mouseDragged()
-		{
-		}
-
-
-		public virtual void mouseDragged(MouseEvent @event)
-		{
-			mouseDragged();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from mouseMoved.xml )
-		///
-		/// The <b>mouseMoved()</b> function is called every time the mouse moves
-		/// and a mouse button is not pressed.
-		///
-		/// ( end auto-generated )
-		/// @webref input:mouse </summary>
-		/// <seealso cref= PApplet#mouseX </seealso>
-		/// <seealso cref= PApplet#mouseY </seealso>
-		/// <seealso cref= PApplet#mousePressed </seealso>
-		/// <seealso cref= PApplet#mousePressed() </seealso>
-		/// <seealso cref= PApplet#mouseReleased() </seealso>
-		/// <seealso cref= PApplet#mouseDragged() </seealso>
-		public virtual void mouseMoved()
-		{
-		}
-
-
-		public virtual void mouseMoved(MouseEvent @event)
-		{
-			mouseMoved();
-		}
-
-
-		public virtual void mouseEntered()
-		{
-		}
-
-
-		public virtual void mouseEntered(MouseEvent @event)
-		{
-			mouseEntered();
-		}
-
-
-		public virtual void mouseExited()
-		{
-		}
-
-
-		public virtual void mouseExited(MouseEvent @event)
-		{
-			mouseExited();
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void mouseWheel()
-		{
-		}
-
-		/// <summary>
-		/// The event.getAmount() method returns negative values if the mouse wheel
-		/// if rotated up or away from the user and positive in the other direction.
-		/// On OS X with "natural" scrolling enabled, the values are opposite.
-		///
-		/// @webref input:mouse </summary>
-		/// <param name="event"> the MouseEvent </param>
-		public virtual void mouseWheel(MouseEvent @event)
-		{
-			mouseWheel();
-		}
-
-
+		// TODO: implement key events
 
 		//////////////////////////////////////////////////////////////
 
+//
+//		//  KeyEvent keyEventQueue[] = new KeyEvent[10];
+//		//  int keyEventCount;
+//		//
+//		//  protected void enqueueKeyEvent(KeyEvent e) {
+//		//    synchronized (keyEventQueue) {
+//		//      if (keyEventCount == keyEventQueue.length) {
+//		//        KeyEvent temp[] = new KeyEvent[keyEventCount << 1];
+//		//        System.arraycopy(keyEventQueue, 0, temp, 0, keyEventCount);
+//		//        keyEventQueue = temp;
+//		//      }
+//		//      keyEventQueue[keyEventCount++] = e;
+//		//    }
+//		//  }
+//		//
+//		//  protected void dequeueKeyEvents() {
+//		//    synchronized (keyEventQueue) {
+//		//      for (int i = 0; i < keyEventCount; i++) {
+//		//        keyEvent = keyEventQueue[i];
+//		//        handleKeyEvent(keyEvent);
+//		//      }
+//		//      keyEventCount = 0;
+//		//    }
+//		//  }
+//
+//
+//		//  protected void handleKeyEvent(java.awt.event.KeyEvent event) {
+//		//    keyEvent = event;
+//		//    key = event.getKeyChar();
+//		//    keyCode = event.getKeyCode();
+//		//
+//		//    if (keyEventMethods != null) {
+//		//      keyEventMethods.handle(new Object[] { event });
+//		//    }
+//		//
+//		//    switch (event.getID()) {
+//		//    case KeyEvent.KEY_PRESSED:
+//		//      keyPressed = true;
+//		//      keyPressed();
+//		//      break;
+//		//    case KeyEvent.KEY_RELEASED:
+//		//      keyPressed = false;
+//		//      keyReleased();
+//		//      break;
+//		//    case KeyEvent.KEY_TYPED:
+//		//      keyTyped();
+//		//      break;
+//		//    }
+//		//
+//		//    // if someone else wants to intercept the key, they should
+//		//    // set key to zero (or something besides the ESC).
+//		//    if (event.getID() == java.awt.event.KeyEvent.KEY_PRESSED) {
+//		//      if (key == java.awt.event.KeyEvent.VK_ESCAPE) {
+//		//        exit();
+//		//      }
+//		//      // When running tethered to the Processing application, respond to
+//		//      // Ctrl-W (or Cmd-W) events by closing the sketch. Disable this behavior
+//		//      // when running independently, because this sketch may be one component
+//		//      // embedded inside an application that has its own close behavior.
+//		//      if (external &&
+//		//          event.getModifiers() == MENU_SHORTCUT &&
+//		//          event.getKeyCode() == 'W') {
+//		//        exit();
+//		//      }
+//		//    }
+//		//  }
+//
+//
+//		protected internal virtual void handleKeyEvent(KeyEvent @event)
+//		{
+//			keyEvent = @event;
+//			key = @event.Key;
+//			keyCode = @event.KeyCode;
+//
+//			switch (@event.Action)
+//			{
+//			case KeyEvent.PRESS:
+//				keyPressed_Renamed = true;
+//				keyPressed(keyEvent);
+//				break;
+//			case KeyEvent.RELEASE:
+//				keyPressed_Renamed = false;
+//				keyReleased(keyEvent);
+//				break;
+//			case KeyEvent.TYPE:
+//				keyTyped(keyEvent);
+//				break;
+//			}
+//
+//			if (keyEventMethods != null)
+//			{
+//				keyEventMethods.handle(new object[] {@event.Native});
+//			}
+//
+//			handleMethods("keyEvent", new object[] {@event});
+//
+//			// if someone else wants to intercept the key, they should
+//			// set key to zero (or something besides the ESC).
+//			if (@event.Action == KeyEvent.PRESS)
+//			{
+//				//if (key == java.awt.event.KeyEvent.VK_ESCAPE) {
+//				if (key == PConstants_Fields.ESC)
+//				{
+//					exit();
+//				}
+//				// When running tethered to the Processing application, respond to
+//				// Ctrl-W (or Cmd-W) events by closing the sketch. Not enabled when
+//				// running independently, because this sketch may be one component
+//				// embedded inside an application that has its own close behavior.
+//				if (external && @event.KeyCode == 'W' && ((@event.MetaDown && platform == PConstants_Fields.MACOSX) || (@event.ControlDown && platform != PConstants_Fields.MACOSX)))
+//				{
+//					// Can't use this native stuff b/c the native event might be NEWT
+//					//      if (external && event.getNative() instanceof java.awt.event.KeyEvent &&
+//					//          ((java.awt.event.KeyEvent) event.getNative()).getModifiers() ==
+//					//            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() &&
+//					//          event.getKeyCode() == 'W') {
+//					exit();
+//				}
+//			}
+//		}
+//
+//
+//		protected internal virtual void nativeKeyEvent(java.awt.@event.KeyEvent @event)
+//		{
+//			int peAction = 0;
+//			switch (@event.ID)
+//			{
+//			case java.awt.@event.KeyEvent.KEY_PRESSED:
+//				peAction = KeyEvent.PRESS;
+//				break;
+//			case java.awt.@event.KeyEvent.KEY_RELEASED:
+//				peAction = KeyEvent.RELEASE;
+//				break;
+//			case java.awt.@event.KeyEvent.KEY_TYPED:
+//				peAction = KeyEvent.TYPE;
+//				break;
+//			}
+//
+//			//    int peModifiers = event.getModifiersEx() &
+//			//      (InputEvent.SHIFT_DOWN_MASK |
+//			//       InputEvent.CTRL_DOWN_MASK |
+//			//       InputEvent.META_DOWN_MASK |
+//			//       InputEvent.ALT_DOWN_MASK);
+//			int peModifiers = @event.Modifiers & (InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK | InputEvent.META_MASK | InputEvent.ALT_MASK);
+//
+//			postEvent(new KeyEvent(@event, @event.When, peAction, peModifiers, @event.KeyChar, @event.KeyCode));
+//		}
+//
+//
+//		/// <summary>
+//		/// Overriding keyXxxxx(KeyEvent e) functions will cause the 'key',
+//		/// 'keyCode', and 'keyEvent' variables to no longer work;
+//		/// key events will no longer be queued until the end of draw();
+//		/// and the keyPressed(), keyReleased() and keyTyped() methods
+//		/// will no longer be called.
+//		///
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void keyPressed(java.awt.@event.KeyEvent e)
+//		{
+//			nativeKeyEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void keyReleased(java.awt.@event.KeyEvent e)
+//		{
+//			nativeKeyEvent(e);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual void keyTyped(java.awt.@event.KeyEvent e)
+//		{
+//			nativeKeyEvent(e);
+//		}
+//
+//
+//		///
+//		/// <summary>
+//		/// ( begin auto-generated from keyPressed.xml )
+//		///
+//		/// The <b>keyPressed()</b> function is called once every time a key is
+//		/// pressed. The key that was pressed is stored in the <b>key</b> variable.
+//		/// <br/> <br/>
+//		/// For non-ASCII keys, use the <b>keyCode</b> variable. The keys included
+//		/// in the ASCII specification (BACKSPACE, TAB, ENTER, RETURN, ESC, and
+//		/// DELETE) do not require checking to see if they key is coded, and you
+//		/// should simply use the <b>key</b> variable instead of <b>keyCode</b> If
+//		/// you're making cross-platform projects, note that the ENTER key is
+//		/// commonly used on PCs and Unix and the RETURN key is used instead on
+//		/// Macintosh. Check for both ENTER and RETURN to make sure your program
+//		/// will work for all platforms.
+//		/// <br/> <br/>
+//		/// Because of how operating systems handle key repeats, holding down a key
+//		/// may cause multiple calls to keyPressed() (and keyReleased() as well).
+//		/// The rate of repeat is set by the operating system and how each computer
+//		/// is configured.
+//		///
+//		/// ( end auto-generated )
+//		/// <h3>Advanced</h3>
+//		///
+//		/// Called each time a single key on the keyboard is pressed.
+//		/// Because of how operating systems handle key repeats, holding
+//		/// down a key will cause multiple calls to keyPressed(), because
+//		/// the OS repeat takes over.
+//		/// <para>
+//		/// Examples for key handling:
+//		/// (Tested on Windows XP, please notify if different on other
+//		/// platforms, I have a feeling Mac OS and Linux may do otherwise)
+//		/// <PRE>
+//		/// 1. Pressing 'a' on the keyboard:
+//		///    keyPressed  with key == 'a' and keyCode == 'A'
+//		///    keyTyped    with key == 'a' and keyCode ==  0
+//		///    keyReleased with key == 'a' and keyCode == 'A'
+//		///
+//		/// 2. Pressing 'A' on the keyboard:
+//		///    keyPressed  with key == 'A' and keyCode == 'A'
+//		///    keyTyped    with key == 'A' and keyCode ==  0
+//		///    keyReleased with key == 'A' and keyCode == 'A'
+//		///
+//		/// 3. Pressing 'shift', then 'a' on the keyboard (caps lock is off):
+//		///    keyPressed  with key == CODED and keyCode == SHIFT
+//		///    keyPressed  with key == 'A'   and keyCode == 'A'
+//		///    keyTyped    with key == 'A'   and keyCode == 0
+//		///    keyReleased with key == 'A'   and keyCode == 'A'
+//		///    keyReleased with key == CODED and keyCode == SHIFT
+//		///
+//		/// 4. Holding down the 'a' key.
+//		///    The following will happen several times,
+//		///    depending on your machine's "key repeat rate" settings:
+//		///    keyPressed  with key == 'a' and keyCode == 'A'
+//		///    keyTyped    with key == 'a' and keyCode ==  0
+//		///    When you finally let go, you'll get:
+//		///    keyReleased with key == 'a' and keyCode == 'A'
+//		///
+//		/// 5. Pressing and releasing the 'shift' key
+//		///    keyPressed  with key == CODED and keyCode == SHIFT
+//		///    keyReleased with key == CODED and keyCode == SHIFT
+//		///    (note there is no keyTyped)
+//		///
+//		/// 6. Pressing the tab key in an applet with Java 1.4 will
+//		///    normally do nothing, but PApplet dynamically shuts
+//		///    this behavior off if Java 1.4 is in use (tested 1.4.2_05 Windows).
+//		///    Java 1.1 (Microsoft VM) passes the TAB key through normally.
+//		///    Not tested on other platforms or for 1.3.
+//		/// </PRE>
+//		/// @webref input:keyboard
+//		/// </para>
+//		/// </summary>
+//		/// <seealso cref= PApplet#key </seealso>
+//		/// <seealso cref= PApplet#keyCode </seealso>
+//		/// <seealso cref= PApplet#keyPressed </seealso>
+//		/// <seealso cref= PApplet#keyReleased() </seealso>
+//		public virtual void keyPressed()
+//		{
+//		}
+//
+//
+//		public virtual void keyPressed(KeyEvent @event)
+//		{
+//			keyPressed();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from keyReleased.xml )
+//		///
+//		/// The <b>keyReleased()</b> function is called once every time a key is
+//		/// released. The key that was released will be stored in the <b>key</b>
+//		/// variable. See <b>key</b> and <b>keyReleased</b> for more information.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:keyboard </summary>
+//		/// <seealso cref= PApplet#key </seealso>
+//		/// <seealso cref= PApplet#keyCode </seealso>
+//		/// <seealso cref= PApplet#keyPressed </seealso>
+//		/// <seealso cref= PApplet#keyPressed() </seealso>
+//		public virtual void keyReleased()
+//		{
+//		}
+//
+//
+//		public virtual void keyReleased(KeyEvent @event)
+//		{
+//			keyReleased();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from keyTyped.xml )
+//		///
+//		/// The <b>keyTyped()</b> function is called once every time a key is
+//		/// pressed, but action keys such as Ctrl, Shift, and Alt are ignored.
+//		/// Because of how operating systems handle key repeats, holding down a key
+//		/// will cause multiple calls to <b>keyTyped()</b>, the rate is set by the
+//		/// operating system and how each computer is configured.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:keyboard </summary>
+//		/// <seealso cref= PApplet#keyPressed </seealso>
+//		/// <seealso cref= PApplet#key </seealso>
+//		/// <seealso cref= PApplet#keyCode </seealso>
+//		/// <seealso cref= PApplet#keyReleased() </seealso>
+//		public virtual void keyTyped()
+//		{
+//		}
+//
+//
+//		public virtual void keyTyped(KeyEvent @event)
+//		{
+//			keyTyped();
+//		}
+//
 
-		//  KeyEvent keyEventQueue[] = new KeyEvent[10];
-		//  int keyEventCount;
-		//
-		//  protected void enqueueKeyEvent(KeyEvent e) {
-		//    synchronized (keyEventQueue) {
-		//      if (keyEventCount == keyEventQueue.length) {
-		//        KeyEvent temp[] = new KeyEvent[keyEventCount << 1];
-		//        System.arraycopy(keyEventQueue, 0, temp, 0, keyEventCount);
-		//        keyEventQueue = temp;
-		//      }
-		//      keyEventQueue[keyEventCount++] = e;
-		//    }
-		//  }
-		//
-		//  protected void dequeueKeyEvents() {
-		//    synchronized (keyEventQueue) {
-		//      for (int i = 0; i < keyEventCount; i++) {
-		//        keyEvent = keyEventQueue[i];
-		//        handleKeyEvent(keyEvent);
-		//      }
-		//      keyEventCount = 0;
-		//    }
-		//  }
+		// TODO: implemnt focus if necessary
 
-
-		//  protected void handleKeyEvent(java.awt.event.KeyEvent event) {
-		//    keyEvent = event;
-		//    key = event.getKeyChar();
-		//    keyCode = event.getKeyCode();
-		//
-		//    if (keyEventMethods != null) {
-		//      keyEventMethods.handle(new Object[] { event });
-		//    }
-		//
-		//    switch (event.getID()) {
-		//    case KeyEvent.KEY_PRESSED:
-		//      keyPressed = true;
-		//      keyPressed();
-		//      break;
-		//    case KeyEvent.KEY_RELEASED:
-		//      keyPressed = false;
-		//      keyReleased();
-		//      break;
-		//    case KeyEvent.KEY_TYPED:
-		//      keyTyped();
-		//      break;
-		//    }
-		//
-		//    // if someone else wants to intercept the key, they should
-		//    // set key to zero (or something besides the ESC).
-		//    if (event.getID() == java.awt.event.KeyEvent.KEY_PRESSED) {
-		//      if (key == java.awt.event.KeyEvent.VK_ESCAPE) {
-		//        exit();
-		//      }
-		//      // When running tethered to the Processing application, respond to
-		//      // Ctrl-W (or Cmd-W) events by closing the sketch. Disable this behavior
-		//      // when running independently, because this sketch may be one component
-		//      // embedded inside an application that has its own close behavior.
-		//      if (external &&
-		//          event.getModifiers() == MENU_SHORTCUT &&
-		//          event.getKeyCode() == 'W') {
-		//        exit();
-		//      }
-		//    }
-		//  }
-
-
-		protected internal virtual void handleKeyEvent(KeyEvent @event)
-		{
-			keyEvent = @event;
-			key = @event.Key;
-			keyCode = @event.KeyCode;
-
-			switch (@event.Action)
-			{
-			case KeyEvent.PRESS:
-				keyPressed_Renamed = true;
-				keyPressed(keyEvent);
-				break;
-			case KeyEvent.RELEASE:
-				keyPressed_Renamed = false;
-				keyReleased(keyEvent);
-				break;
-			case KeyEvent.TYPE:
-				keyTyped(keyEvent);
-				break;
-			}
-
-			if (keyEventMethods != null)
-			{
-				keyEventMethods.handle(new object[] {@event.Native});
-			}
-
-			handleMethods("keyEvent", new object[] {@event});
-
-			// if someone else wants to intercept the key, they should
-			// set key to zero (or something besides the ESC).
-			if (@event.Action == KeyEvent.PRESS)
-			{
-				//if (key == java.awt.event.KeyEvent.VK_ESCAPE) {
-				if (key == PConstants_Fields.ESC)
-				{
-					exit();
-				}
-				// When running tethered to the Processing application, respond to
-				// Ctrl-W (or Cmd-W) events by closing the sketch. Not enabled when
-				// running independently, because this sketch may be one component
-				// embedded inside an application that has its own close behavior.
-				if (external && @event.KeyCode == 'W' && ((@event.MetaDown && platform == PConstants_Fields.MACOSX) || (@event.ControlDown && platform != PConstants_Fields.MACOSX)))
-				{
-					// Can't use this native stuff b/c the native event might be NEWT
-					//      if (external && event.getNative() instanceof java.awt.event.KeyEvent &&
-					//          ((java.awt.event.KeyEvent) event.getNative()).getModifiers() ==
-					//            Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() &&
-					//          event.getKeyCode() == 'W') {
-					exit();
-				}
-			}
-		}
-
-
-		protected internal virtual void nativeKeyEvent(java.awt.@event.KeyEvent @event)
-		{
-			int peAction = 0;
-			switch (@event.ID)
-			{
-			case java.awt.@event.KeyEvent.KEY_PRESSED:
-				peAction = KeyEvent.PRESS;
-				break;
-			case java.awt.@event.KeyEvent.KEY_RELEASED:
-				peAction = KeyEvent.RELEASE;
-				break;
-			case java.awt.@event.KeyEvent.KEY_TYPED:
-				peAction = KeyEvent.TYPE;
-				break;
-			}
-
-			//    int peModifiers = event.getModifiersEx() &
-			//      (InputEvent.SHIFT_DOWN_MASK |
-			//       InputEvent.CTRL_DOWN_MASK |
-			//       InputEvent.META_DOWN_MASK |
-			//       InputEvent.ALT_DOWN_MASK);
-			int peModifiers = @event.Modifiers & (InputEvent.SHIFT_MASK | InputEvent.CTRL_MASK | InputEvent.META_MASK | InputEvent.ALT_MASK);
-
-			postEvent(new KeyEvent(@event, @event.When, peAction, peModifiers, @event.KeyChar, @event.KeyCode));
-		}
-
-
-		/// <summary>
-		/// Overriding keyXxxxx(KeyEvent e) functions will cause the 'key',
-		/// 'keyCode', and 'keyEvent' variables to no longer work;
-		/// key events will no longer be queued until the end of draw();
-		/// and the keyPressed(), keyReleased() and keyTyped() methods
-		/// will no longer be called.
-		///
-		/// @nowebref
-		/// </summary>
-		public virtual void keyPressed(java.awt.@event.KeyEvent e)
-		{
-			nativeKeyEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void keyReleased(java.awt.@event.KeyEvent e)
-		{
-			nativeKeyEvent(e);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual void keyTyped(java.awt.@event.KeyEvent e)
-		{
-			nativeKeyEvent(e);
-		}
-
-
-		///
-		/// <summary>
-		/// ( begin auto-generated from keyPressed.xml )
-		///
-		/// The <b>keyPressed()</b> function is called once every time a key is
-		/// pressed. The key that was pressed is stored in the <b>key</b> variable.
-		/// <br/> <br/>
-		/// For non-ASCII keys, use the <b>keyCode</b> variable. The keys included
-		/// in the ASCII specification (BACKSPACE, TAB, ENTER, RETURN, ESC, and
-		/// DELETE) do not require checking to see if they key is coded, and you
-		/// should simply use the <b>key</b> variable instead of <b>keyCode</b> If
-		/// you're making cross-platform projects, note that the ENTER key is
-		/// commonly used on PCs and Unix and the RETURN key is used instead on
-		/// Macintosh. Check for both ENTER and RETURN to make sure your program
-		/// will work for all platforms.
-		/// <br/> <br/>
-		/// Because of how operating systems handle key repeats, holding down a key
-		/// may cause multiple calls to keyPressed() (and keyReleased() as well).
-		/// The rate of repeat is set by the operating system and how each computer
-		/// is configured.
-		///
-		/// ( end auto-generated )
-		/// <h3>Advanced</h3>
-		///
-		/// Called each time a single key on the keyboard is pressed.
-		/// Because of how operating systems handle key repeats, holding
-		/// down a key will cause multiple calls to keyPressed(), because
-		/// the OS repeat takes over.
-		/// <para>
-		/// Examples for key handling:
-		/// (Tested on Windows XP, please notify if different on other
-		/// platforms, I have a feeling Mac OS and Linux may do otherwise)
-		/// <PRE>
-		/// 1. Pressing 'a' on the keyboard:
-		///    keyPressed  with key == 'a' and keyCode == 'A'
-		///    keyTyped    with key == 'a' and keyCode ==  0
-		///    keyReleased with key == 'a' and keyCode == 'A'
-		///
-		/// 2. Pressing 'A' on the keyboard:
-		///    keyPressed  with key == 'A' and keyCode == 'A'
-		///    keyTyped    with key == 'A' and keyCode ==  0
-		///    keyReleased with key == 'A' and keyCode == 'A'
-		///
-		/// 3. Pressing 'shift', then 'a' on the keyboard (caps lock is off):
-		///    keyPressed  with key == CODED and keyCode == SHIFT
-		///    keyPressed  with key == 'A'   and keyCode == 'A'
-		///    keyTyped    with key == 'A'   and keyCode == 0
-		///    keyReleased with key == 'A'   and keyCode == 'A'
-		///    keyReleased with key == CODED and keyCode == SHIFT
-		///
-		/// 4. Holding down the 'a' key.
-		///    The following will happen several times,
-		///    depending on your machine's "key repeat rate" settings:
-		///    keyPressed  with key == 'a' and keyCode == 'A'
-		///    keyTyped    with key == 'a' and keyCode ==  0
-		///    When you finally let go, you'll get:
-		///    keyReleased with key == 'a' and keyCode == 'A'
-		///
-		/// 5. Pressing and releasing the 'shift' key
-		///    keyPressed  with key == CODED and keyCode == SHIFT
-		///    keyReleased with key == CODED and keyCode == SHIFT
-		///    (note there is no keyTyped)
-		///
-		/// 6. Pressing the tab key in an applet with Java 1.4 will
-		///    normally do nothing, but PApplet dynamically shuts
-		///    this behavior off if Java 1.4 is in use (tested 1.4.2_05 Windows).
-		///    Java 1.1 (Microsoft VM) passes the TAB key through normally.
-		///    Not tested on other platforms or for 1.3.
-		/// </PRE>
-		/// @webref input:keyboard
-		/// </para>
-		/// </summary>
-		/// <seealso cref= PApplet#key </seealso>
-		/// <seealso cref= PApplet#keyCode </seealso>
-		/// <seealso cref= PApplet#keyPressed </seealso>
-		/// <seealso cref= PApplet#keyReleased() </seealso>
-		public virtual void keyPressed()
-		{
-		}
-
-
-		public virtual void keyPressed(KeyEvent @event)
-		{
-			keyPressed();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from keyReleased.xml )
-		///
-		/// The <b>keyReleased()</b> function is called once every time a key is
-		/// released. The key that was released will be stored in the <b>key</b>
-		/// variable. See <b>key</b> and <b>keyReleased</b> for more information.
-		///
-		/// ( end auto-generated )
-		/// @webref input:keyboard </summary>
-		/// <seealso cref= PApplet#key </seealso>
-		/// <seealso cref= PApplet#keyCode </seealso>
-		/// <seealso cref= PApplet#keyPressed </seealso>
-		/// <seealso cref= PApplet#keyPressed() </seealso>
-		public virtual void keyReleased()
-		{
-		}
-
-
-		public virtual void keyReleased(KeyEvent @event)
-		{
-			keyReleased();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from keyTyped.xml )
-		///
-		/// The <b>keyTyped()</b> function is called once every time a key is
-		/// pressed, but action keys such as Ctrl, Shift, and Alt are ignored.
-		/// Because of how operating systems handle key repeats, holding down a key
-		/// will cause multiple calls to <b>keyTyped()</b>, the rate is set by the
-		/// operating system and how each computer is configured.
-		///
-		/// ( end auto-generated )
-		/// @webref input:keyboard </summary>
-		/// <seealso cref= PApplet#keyPressed </seealso>
-		/// <seealso cref= PApplet#key </seealso>
-		/// <seealso cref= PApplet#keyCode </seealso>
-		/// <seealso cref= PApplet#keyReleased() </seealso>
-		public virtual void keyTyped()
-		{
-		}
-
-
-		public virtual void keyTyped(KeyEvent @event)
-		{
-			keyTyped();
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// i am focused man, and i'm not afraid of death.
-		// and i'm going all out. i circle the vultures in a van
-		// and i run the block.
-
-
-		public virtual void focusGained()
-		{
-		}
-
-		public virtual void focusGained(FocusEvent e)
-		{
-			focused = true;
-			focusGained();
-		}
-
-
-		public virtual void focusLost()
-		{
-		}
-
-		public virtual void focusLost(FocusEvent e)
-		{
-			focused = false;
-			focusLost();
-		}
-
+//		//////////////////////////////////////////////////////////////
+//
+//		// i am focused man, and i'm not afraid of death.
+//		// and i'm going all out. i circle the vultures in a van
+//		// and i run the block.
+//
+//
+//		public virtual void focusGained()
+//		{
+//		}
+//
+//		public virtual void focusGained(FocusEvent e)
+//		{
+//			focused = true;
+//			focusGained();
+//		}
+//
+//
+//		public virtual void focusLost()
+//		{
+//		}
+//
+//		public virtual void focusLost(FocusEvent e)
+//		{
+//			focused = false;
+//			focusLost();
+//		}
+//
 
 		//////////////////////////////////////////////////////////////
 
@@ -3875,7 +3883,8 @@ namespace processing.core
 		///  </seealso>
 		public virtual int millis()
 		{
-			return (int)(DateTimeHelperClass.CurrentUnixTimeMillis() - millisOffset);
+			return Mathf.FloorToInt(UnityEngine.Time.realtimeSinceStartup * 1000.0f);
+//			return (int)(DateTimeHelperClass.CurrentUnixTimeMillis() - millisOffset);
 		}
 
 		/// <summary>
@@ -3895,7 +3904,7 @@ namespace processing.core
 		///  </seealso>
 		public static int second()
 		{
-			return new DateTime().Second;
+			return DateTime.Now.Second;
 		}
 
 		/// <summary>
@@ -3917,7 +3926,7 @@ namespace processing.core
 		///  </seealso>
 		public static int minute()
 		{
-			return new DateTime().Minute;
+			return DateTime.Now.Minute;
 		}
 
 		/// <summary>
@@ -3937,7 +3946,7 @@ namespace processing.core
 		///  </seealso>
 		public static int hour()
 		{
-			return new DateTime().get(DateTime.HOUR_OF_DAY);
+			return DateTime.Now.Hour;
 		}
 
 		/// <summary>
@@ -3964,7 +3973,7 @@ namespace processing.core
 		/// <seealso cref= PApplet#year() </seealso>
 		public static int day()
 		{
-			return new DateTime().Day;
+			return DateTime.Now.Day;
 		}
 
 		/// <summary>
@@ -3984,8 +3993,7 @@ namespace processing.core
 		/// <seealso cref= PApplet#year() </seealso>
 		public static int month()
 		{
-			// months are number 0..11 so change to colloquial 1..12
-			return new DateTime().Month + 1;
+			return DateTime.Now.Month;
 		}
 
 		/// <summary>
@@ -4007,7 +4015,7 @@ namespace processing.core
 		/// <seealso cref= PApplet#month() </seealso>
 		public static int year()
 		{
-			return new DateTime().Year;
+			return DateTime.Now.Year;
 		}
 
 
@@ -4260,109 +4268,110 @@ namespace processing.core
 			open(new string[] {filename});
 		}
 
+		// TODO: IMplement Process launch if necessary
 
-		internal static string openLauncher;
-
-		/// <summary>
-		/// Launch a process using a platforms shell. This version uses an array
-		/// to make it easier to deal with spaces in the individual elements.
-		/// (This avoids the situation of trying to put single or double quotes
-		/// around different bits).
-		/// </summary>
-		/// <param name="argv"> list of commands passed to the command line </param>
-		public static Process open(string[] argv)
-		{
-			string[] @params = null;
-
-			if (platform == PConstants_Fields.WINDOWS)
-			{
-				// just launching the .html file via the shell works
-				// but make sure to chmod +x the .html files first
-				// also place quotes around it in case there's a space
-				// in the user.dir part of the url
-				@params = new string[] {"cmd", "/c"};
-
-			}
-			else if (platform == PConstants_Fields.MACOSX)
-			{
-				@params = new string[] {"open"};
-
-			}
-			else if (platform == PConstants_Fields.LINUX)
-			{
-				if (openLauncher == null)
-				{
-					// Attempt to use gnome-open
-					try
-					{
-						Process p = Runtime.Runtime.exec(new string[] {"gnome-open"});
-						/*int result =*/     p.waitFor();
-						// Not installed will throw an IOException (JDK 1.4.2, Ubuntu 7.04)
-						openLauncher = "gnome-open";
-					}
-					catch (Exception)
-					{
-					}
-				}
-				if (openLauncher == null)
-				{
-					// Attempt with kde-open
-					try
-					{
-						Process p = Runtime.Runtime.exec(new string[] {"kde-open"});
-						/*int result =*/     p.waitFor();
-						openLauncher = "kde-open";
-					}
-					catch (Exception)
-					{
-					}
-				}
-				if (openLauncher == null)
-				{
-					Console.Error.WriteLine("Could not find gnome-open or kde-open, " + "the open() command may not work.");
-				}
-				if (openLauncher != null)
-				{
-					@params = new string[] {openLauncher};
-				}
-				//} else {  // give up and just pass it to Runtime.exec()
-				//open(new String[] { filename });
-				//params = new String[] { filename };
-			}
-			if (@params != null)
-			{
-				// If the 'open', 'gnome-open' or 'cmd' are already included
-				if (@params[0].Equals(argv[0]))
-				{
-					// then don't prepend those params again
-					return exec(argv);
-				}
-				else
-				{
-					@params = concat(@params, argv);
-					return exec(@params);
-				}
-			}
-			else
-			{
-				return exec(argv);
-			}
-		}
-
-
-		public static Process exec(string[] argv)
-		{
-			try
-			{
-				return Runtime.Runtime.exec(argv);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				throw new Exception("Could not open " + join(argv, ' '));
-			}
-		}
+//		internal static string openLauncher;
+//
+//		/// <summary>
+//		/// Launch a process using a platforms shell. This version uses an array
+//		/// to make it easier to deal with spaces in the individual elements.
+//		/// (This avoids the situation of trying to put single or double quotes
+//		/// around different bits).
+//		/// </summary>
+//		/// <param name="argv"> list of commands passed to the command line </param>
+//		public static Process open(string[] argv)
+//		{
+//			string[] @params = null;
+//
+//			if (platform == PConstants_Fields.WINDOWS)
+//			{
+//				// just launching the .html file via the shell works
+//				// but make sure to chmod +x the .html files first
+//				// also place quotes around it in case there's a space
+//				// in the user.dir part of the url
+//				@params = new string[] {"cmd", "/c"};
+//
+//			}
+//			else if (platform == PConstants_Fields.MACOSX)
+//			{
+//				@params = new string[] {"open"};
+//
+//			}
+//			else if (platform == PConstants_Fields.LINUX)
+//			{
+//				if (openLauncher == null)
+//				{
+//					// Attempt to use gnome-open
+//					try
+//					{
+//						Process p = Runtime.Runtime.exec(new string[] {"gnome-open"});
+//						/*int result =*/     p.waitFor();
+//						// Not installed will throw an IOException (JDK 1.4.2, Ubuntu 7.04)
+//						openLauncher = "gnome-open";
+//					}
+//					catch (Exception)
+//					{
+//					}
+//				}
+//				if (openLauncher == null)
+//				{
+//					// Attempt with kde-open
+//					try
+//					{
+//						Process p = Runtime.Runtime.exec(new string[] {"kde-open"});
+//						/*int result =*/     p.waitFor();
+//						openLauncher = "kde-open";
+//					}
+//					catch (Exception)
+//					{
+//					}
+//				}
+//				if (openLauncher == null)
+//				{
+//					Console.Error.WriteLine("Could not find gnome-open or kde-open, " + "the open() command may not work.");
+//				}
+//				if (openLauncher != null)
+//				{
+//					@params = new string[] {openLauncher};
+//				}
+//				//} else {  // give up and just pass it to Runtime.exec()
+//				//open(new String[] { filename });
+//				//params = new String[] { filename };
+//			}
+//			if (@params != null)
+//			{
+//				// If the 'open', 'gnome-open' or 'cmd' are already included
+//				if (@params[0].Equals(argv[0]))
+//				{
+//					// then don't prepend those params again
+//					return exec(argv);
+//				}
+//				else
+//				{
+//					@params = concat(@params, argv);
+//					return exec(@params);
+//				}
+//			}
+//			else
+//			{
+//				return exec(argv);
+//			}
+//		}
+//
+//
+//		public static Process exec(string[] argv)
+//		{
+//			try
+//			{
+//				return Runtime.Runtime.exec(argv);
+//			}
+//			catch (Exception e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				throw new Exception("Could not open " + join(argv, ' '));
+//			}
+//		}
 
 
 		//////////////////////////////////////////////////////////////
@@ -6493,2450 +6502,2463 @@ namespace processing.core
 //			}
 //		}
 
+		//TODO: implement image if necessary
 
 		/// <summary>
 		/// Load an AWT image synchronously by setting up a MediaTracker for
 		/// a single image, and blocking until it has loaded.
 		/// </summary>
-		protected internal virtual PImage loadImageMT(Image awtImage)
-		{
-			MediaTracker tracker = new MediaTracker(this);
-			tracker.addImage(awtImage, 0);
-			try
-			{
-				tracker.waitForAll();
-			}
-			catch (InterruptedException)
-			{
-				//e.printStackTrace();  // non-fatal, right?
-			}
-
-			PImage image = new PImage(awtImage);
-			image.parent = this;
-			return image;
-		}
-
-
-		/// <summary>
-		/// Use Java 1.4 ImageIO methods to load an image.
-		/// </summary>
-		protected internal virtual PImage loadImageIO(string filename)
-		{
-			InputStream stream = createInput(filename);
-			if (stream == null)
-			{
-				Console.Error.WriteLine("The image " + filename + " could not be found.");
-				return null;
-			}
-
-			try
-			{
-				BufferedImage bi = ImageIO.read(stream);
-				PImage outgoing = new PImage(bi.Width, bi.Height);
-				outgoing.parent = this;
-
-				bi.getRGB(0, 0, outgoing.width, outgoing.height, outgoing.pixels, 0, outgoing.width);
-
-				// check the alpha for this image
-				// was gonna call getType() on the image to see if RGB or ARGB,
-				// but it's not actually useful, since gif images will come through
-				// as TYPE_BYTE_INDEXED, which means it'll still have to check for
-				// the transparency. also, would have to iterate through all the other
-				// types and guess whether alpha was in there, so.. just gonna stick
-				// with the old method.
-				outgoing.checkAlpha();
-
-				// return the image
-				return outgoing;
-
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return null;
-			}
-		}
-
-
-		/// <summary>
-		/// Targa image loader for RLE-compressed TGA files.
-		/// <para>
-		/// Rewritten for 0115 to read/write RLE-encoded targa images.
-		/// For 0125, non-RLE encoded images are now supported, along with
-		/// images whose y-order is reversed (which is standard for TGA files).
-		/// </para>
-		/// <para>
-		/// A version of this function is in MovieMaker.java. Any fixes here
-		/// should be applied over in MovieMaker as well.
-		/// </para>
-		/// <para>
-		/// Known issue with RLE encoding and odd behavior in some apps:
-		/// https://github.com/processing/processing/issues/2096
-		/// Please help!
-		/// </para>
-		/// </summary>
-		//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-		//ORIGINAL LINE: protected PImage loadImageTGA(String filename) throws IOException
-		protected internal virtual PImage loadImageTGA(string filename)
-		{
-			InputStream @is = createInput(filename);
-			if (@is == null)
-			{
-				return null;
-			}
-
-			sbyte[] header = new sbyte[18];
-			int offset = 0;
-			do
-			{
-				int count = @is.read(header, offset, header.Length - offset);
-				if (count == -1)
-				{
-					return null;
-				}
-				offset += count;
-			}
-			while (offset < 18);
-
-			/*
-			header[2] image type code
-			2  (0x02) - Uncompressed, RGB images.
-			3  (0x03) - Uncompressed, black and white images.
-			10 (0x0A) - Run-length encoded RGB images.
-			11 (0x0B) - Compressed, black and white images. (grayscale?)
-
-			header[16] is the bit depth (8, 24, 32)
-
-			header[17] image descriptor (packed bits)
-			0x20 is 32 = origin upper-left
-			0x28 is 32 + 8 = origin upper-left + 32 bits
-
-			7  6  5  4  3  2  1  0
-			128 64 32 16  8  4  2  1
-			*/
-
-			int format = 0;
-
-			if (((header[2] == 3) || (header[2] == 11)) && (header[16] == 8) && ((header[17] == 0x8) || (header[17] == 0x28))) // origin, 32 bit -  8 bits -  B&W, plus RLE or not
-			{
-				format = PConstants_Fields.ALPHA;
-
-			} // RGB, RLE or not
-			else if (((header[2] == 2) || (header[2] == 10)) && (header[16] == 24) && ((header[17] == 0x20) || (header[17] == 0))) // origin -  24 bits
-			{
-				format = PConstants_Fields.RGB;
-
-			}
-			else if (((header[2] == 2) || (header[2] == 10)) && (header[16] == 32) && ((header[17] == 0x8) || (header[17] == 0x28))) // origin, 32
-			{
-				format = PConstants_Fields.ARGB;
-			}
-
-			if (format == 0)
-			{
-				Console.Error.WriteLine("Unknown .tga file format for " + filename);
-				//" (" + header[2] + " " +
-				//(header[16] & 0xff) + " " +
-				//hex(header[17], 2) + ")");
-				return null;
-			}
-
-			int w = ((header[13] & 0xff) << 8) + (header[12] & 0xff);
-			int h = ((header[15] & 0xff) << 8) + (header[14] & 0xff);
-			PImage outgoing = createImage(w, h, format);
-
-			// where "reversed" means upper-left corner (normal for most of
-			// the modernized world, but "reversed" for the tga spec)
-			//boolean reversed = (header[17] & 0x20) != 0;
-			// https://github.com/processing/processing/issues/1682
-			bool reversed = (header[17] & 0x20) == 0;
-
-			if ((header[2] == 2) || (header[2] == 3)) // not RLE encoded
-			{
-				if (reversed)
-				{
-					int index = (h - 1) * w;
-					switch (format)
-					{
-					case PConstants_Fields.ALPHA:
-						for (int y = h - 1; y >= 0; y--)
-						{
-							for (int x = 0; x < w; x++)
-							{
-								outgoing.pixels[index + x] = @is.read();
-							}
-							index -= w;
-						}
-						break;
-					case PConstants_Fields.RGB:
-						for (int y = h - 1; y >= 0; y--)
-						{
-							for (int x = 0; x < w; x++)
-							{
-								outgoing.pixels[index + x] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | unchecked((int)0xff000000);
-							}
-							index -= w;
-						}
-						break;
-					case PConstants_Fields.ARGB:
-						for (int y = h - 1; y >= 0; y--)
-						{
-							for (int x = 0; x < w; x++)
-							{
-								outgoing.pixels[index + x] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24);
-							}
-							index -= w;
-						}
-						break;
-					}
-				} // not reversed
-				else
-				{
-					int count = w * h;
-					switch (format)
-					{
-					case PConstants_Fields.ALPHA:
-						for (int i = 0; i < count; i++)
-						{
-							outgoing.pixels[i] = @is.read();
-						}
-						break;
-					case PConstants_Fields.RGB:
-						for (int i = 0; i < count; i++)
-						{
-							outgoing.pixels[i] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | unchecked((int)0xff000000);
-						}
-						break;
-					case PConstants_Fields.ARGB:
-						for (int i = 0; i < count; i++)
-						{
-							outgoing.pixels[i] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24);
-						}
-						break;
-					}
-				}
-
-			} // header[2] is 10 or 11
-			else
-			{
-				int index = 0;
-				int[] px = outgoing.pixels;
-
-				while (index < px.Length)
-				{
-					int num = @is.read();
-					bool isRLE = (num & 0x80) != 0;
-					if (isRLE)
-					{
-						num -= 127; // (num & 0x7F) + 1
-						int pixel = 0;
-						switch (format)
-						{
-						case PConstants_Fields.ALPHA:
-							pixel = @is.read();
-							break;
-						case PConstants_Fields.RGB:
-							pixel = unchecked((int)0xFF000000) | @is.read() | (@is.read() << 8) | (@is.read() << 16);
-							//(is.read() << 16) | (is.read() << 8) | is.read();
-							break;
-						case PConstants_Fields.ARGB:
-							pixel = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24);
-							break;
-						}
-						for (int i = 0; i < num; i++)
-						{
-							px[index++] = pixel;
-							if (index == px.Length)
-							{
-								break;
-							}
-						}
-					} // write up to 127 bytes as uncompressed
-					else
-					{
-						num += 1;
-						switch (format)
-						{
-						case PConstants_Fields.ALPHA:
-							for (int i = 0; i < num; i++)
-							{
-								px[index++] = @is.read();
-							}
-							break;
-						case PConstants_Fields.RGB:
-							for (int i = 0; i < num; i++)
-							{
-								px[index++] = unchecked((int)0xFF000000) | @is.read() | (@is.read() << 8) | (@is.read() << 16);
-								//(is.read() << 16) | (is.read() << 8) | is.read();
-							}
-							break;
-						case PConstants_Fields.ARGB:
-							for (int i = 0; i < num; i++)
-							{
-								px[index++] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24); //(is.read() << 24) |
-								//(is.read() << 16) | (is.read() << 8) | is.read();
-							}
-							break;
-						}
-					}
-				}
-
-				if (!reversed)
-				{
-					int[] temp = new int[w];
-					for (int y = 0; y < h / 2; y++)
-					{
-						int z = (h - 1) - y;
-						Array.Copy(px, y * w, temp, 0, w);
-						Array.Copy(px, z * w, px, y * w, w);
-						Array.Copy(temp, 0, px, z * w, w);
-					}
-				}
-			}
-
-			return outgoing;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// DATA I/O
-
-
-		//  /**
-		//   * @webref input:files
-		//   * @brief Creates a new XML object
-		//   * @param name the name to be given to the root element of the new XML object
-		//   * @return an XML object, or null
-		//   * @see XML
-		//   * @see PApplet#loadXML(String)
-		//   * @see PApplet#parseXML(String)
-		//   * @see PApplet#saveXML(XML, String)
-		//   */
-		//  public XML createXML(String name) {
-		//    try {
-		//      return new XML(name);
-		//    } catch (Exception e) {
-		//      e.printStackTrace();
-		//      return null;
-		//    }
-		//  }
-
-
-		/// <summary>
-		/// @webref input:files </summary>
-		/// <param name="filename"> name of a file in the data folder or a URL. </param>
-		/// <seealso cref= XML </seealso>
-		/// <seealso cref= PApplet#parseXML(String) </seealso>
-		/// <seealso cref= PApplet#saveXML(XML, String) </seealso>
-		/// <seealso cref= PApplet#loadBytes(String) </seealso>
-		/// <seealso cref= PApplet#loadStrings(String) </seealso>
-		/// <seealso cref= PApplet#loadTable(String) </seealso>
-		public virtual XML loadXML(string filename)
-		{
-			return loadXML(filename, null);
-		}
-
-
-		// version that uses 'options' though there are currently no supported options
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual XML loadXML(string filename, string options)
-		{
-			try
-			{
-				return new XML(createReader(filename), options);
-				//      return new XML(createInput(filename), options);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return null;
-			}
-		}
-
-
-		/// <summary>
-		/// @webref input:files
-		/// @brief Converts String content to an XML object </summary>
-		/// <param name="data"> the content to be parsed as XML </param>
-		/// <returns> an XML object, or null </returns>
-		/// <seealso cref= XML </seealso>
-		/// <seealso cref= PApplet#loadXML(String) </seealso>
-		/// <seealso cref= PApplet#saveXML(XML, String) </seealso>
-		public virtual XML parseXML(string xmlString)
-		{
-			return parseXML(xmlString, null);
-		}
-
-
-		public virtual XML parseXML(string xmlString, string options)
-		{
-			try
-			{
-				return XML.parse(xmlString, options);
-			}
-			catch (Exception e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return null;
-			}
-		}
-
-
-		/// <summary>
-		/// @webref output:files </summary>
-		/// <param name="xml"> the XML object to save to disk </param>
-		/// <param name="filename"> name of the file to write to </param>
-		/// <seealso cref= XML </seealso>
-		/// <seealso cref= PApplet#loadXML(String) </seealso>
-		/// <seealso cref= PApplet#parseXML(String) </seealso>
-		public virtual bool saveXML(XML xml, string filename)
-		{
-			return saveXML(xml, filename, null);
-		}
-
-
-		public virtual bool saveXML(XML xml, string filename, string options)
-		{
-			return xml.save(saveFile(filename), options);
-		}
-
-
-		public virtual JSONObject parseJSONObject(string input)
-		{
-			return new JSONObject(new StringReader(input));
-		}
-
-
-		/// <summary>
-		/// @webref input:files </summary>
-		/// <param name="filename"> name of a file in the data folder or a URL </param>
-		/// <seealso cref= JSONObject </seealso>
-		/// <seealso cref= JSONArray </seealso>
-		/// <seealso cref= PApplet#loadJSONArray(String) </seealso>
-		/// <seealso cref= PApplet#saveJSONObject(JSONObject, String) </seealso>
-		/// <seealso cref= PApplet#saveJSONArray(JSONArray, String) </seealso>
-		public virtual JSONObject loadJSONObject(string filename)
-		{
-			return new JSONObject(createReader(filename));
-		}
-
-
-		public static JSONObject loadJSONObject(File file)
-		{
-			return new JSONObject(createReader(file));
-		}
-
-
-		/// <summary>
-		/// @webref output:files </summary>
-		/// <seealso cref= JSONObject </seealso>
-		/// <seealso cref= JSONArray </seealso>
-		/// <seealso cref= PApplet#loadJSONObject(String) </seealso>
-		/// <seealso cref= PApplet#loadJSONArray(String) </seealso>
-		/// <seealso cref= PApplet#saveJSONArray(JSONArray, String) </seealso>
-		public virtual bool saveJSONObject(JSONObject json, string filename)
-		{
-			return saveJSONObject(json, filename, null);
-		}
-
-
-		public virtual bool saveJSONObject(JSONObject json, string filename, string options)
-		{
-			return json.save(saveFile(filename), options);
-		}
-
-
-		public virtual JSONArray parseJSONArray(string input)
-		{
-			return new JSONArray(new StringReader(input));
-		}
-
-
-		/// <summary>
-		/// @webref input:files </summary>
-		/// <param name="filename"> name of a file in the data folder or a URL </param>
-		/// <seealso cref= JSONObject </seealso>
-		/// <seealso cref= JSONArray </seealso>
-		/// <seealso cref= PApplet#loadJSONObject(String) </seealso>
-		/// <seealso cref= PApplet#saveJSONObject(JSONObject, String) </seealso>
-		/// <seealso cref= PApplet#saveJSONArray(JSONArray, String) </seealso>
-		public virtual JSONArray loadJSONArray(string filename)
-		{
-			return new JSONArray(createReader(filename));
-		}
-
-
-		public static JSONArray loadJSONArray(File file)
-		{
-			return new JSONArray(createReader(file));
-		}
-
-
-		/// <summary>
-		/// @webref output:files </summary>
-		/// <seealso cref= JSONObject </seealso>
-		/// <seealso cref= JSONArray </seealso>
-		/// <seealso cref= PApplet#loadJSONObject(String) </seealso>
-		/// <seealso cref= PApplet#loadJSONArray(String) </seealso>
-		/// <seealso cref= PApplet#saveJSONObject(JSONObject, String) </seealso>
-		public virtual bool saveJSONArray(JSONArray json, string filename)
-		{
-			return saveJSONArray(json, filename, null);
-		}
-
-
-		public virtual bool saveJSONArray(JSONArray json, string filename, string options)
-		{
-			return json.save(saveFile(filename), options);
-		}
-
-
-
-		//  /**
-		//   * @webref input:files
-		//   * @see Table
-		//   * @see PApplet#loadTable(String)
-		//   * @see PApplet#saveTable(Table, String)
-		//   */
-		//  public Table createTable() {
-		//    return new Table();
-		//  }
-
-
-		/// <summary>
-		/// @webref input:files </summary>
-		/// <param name="filename"> name of a file in the data folder or a URL. </param>
-		/// <seealso cref= Table </seealso>
-		/// <seealso cref= PApplet#saveTable(Table, String) </seealso>
-		/// <seealso cref= PApplet#loadBytes(String) </seealso>
-		/// <seealso cref= PApplet#loadStrings(String) </seealso>
-		/// <seealso cref= PApplet#loadXML(String) </seealso>
-		public virtual Table loadTable(string filename)
-		{
-			return loadTable(filename, null);
-		}
-
-
-		/// <summary>
-		/// Options may contain "header", "tsv", "csv", or "bin" separated by commas.
-		///
-		/// Another option is "dictionary=filename.tsv", which allows users to
-		/// specify a "dictionary" file that contains a mapping of the column titles
-		/// and the data types used in the table file. This can be far more efficient
-		/// (in terms of speed and memory usage) for loading and parsing tables. The
-		/// dictionary file can only be tab separated values (.tsv) and its extension
-		/// will be ignored. This option was added in Processing 2.0.2.
-		/// </summary>
-		public virtual Table loadTable(string filename, string options)
-		{
-			try
-			{
-				string optionStr = Table.extensionOptions(true, filename, options);
-				string[] optionList = Trim(Split(optionStr, ','));
-
-				Table dictionary = null;
-				foreach (string opt in optionList)
-				{
-					if (opt.StartsWith("dictionary="))
-					{
-						dictionary = loadTable(opt.Substring(opt.IndexOf('=') + 1), "tsv");
-						return dictionary.typedParse(createInput(filename), optionStr);
-					}
-				}
-				return new Table(createInput(filename), optionStr);
-
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return null;
-			}
-		}
-
-
-		/// <summary>
-		/// @webref output:files </summary>
-		/// <param name="table"> the Table object to save to a file </param>
-		/// <param name="filename"> the filename to which the Table should be saved </param>
-		/// <seealso cref= Table </seealso>
-		/// <seealso cref= PApplet#loadTable(String) </seealso>
-		public virtual bool saveTable(Table table, string filename)
-		{
-			return saveTable(table, filename, null);
-		}
-
-
-		/// <param name="options"> can be one of "tsv", "csv", "bin", or "html" </param>
-		public virtual bool saveTable(Table table, string filename, string options)
-		{
-			//    String ext = checkExtension(filename);
-			//    if (ext != null) {
-			//      if (ext.equals("csv") || ext.equals("tsv") || ext.equals("bin") || ext.equals("html")) {
-			//        if (options == null) {
-			//          options = ext;
-			//        } else {
-			//          options = ext + "," + options;
-			//        }
-			//      }
-			//    }
-
-			try
-			{
-				// Figure out location and make sure the target path exists
-				File outputFile = saveFile(filename);
-				// Open a stream and take care of .gz if necessary
-				return table.save(outputFile, options);
-
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return false;
-			}
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// FONT I/O
-
-		/// <summary>
-		/// ( begin auto-generated from loadFont.xml )
-		///
-		/// Loads a font into a variable of type <b>PFont</b>. To load correctly,
-		/// fonts must be located in the data directory of the current sketch. To
-		/// create a font to use with Processing, select "Create Font..." from the
-		/// Tools menu. This will create a font in the format Processing requires
-		/// and also adds it to the current sketch's data directory.<br />
-		/// <br />
-		/// Like <b>loadImage()</b> and other functions that load data, the
-		/// <b>loadFont()</b> function should not be used inside <b>draw()</b>,
-		/// because it will slow down the sketch considerably, as the font will be
-		/// re-loaded from the disk (or network) on each frame.<br />
-		/// <br />
-		/// For most renderers, Processing displays fonts using the .vlw font
-		/// format, which uses images for each letter, rather than defining them
-		/// through vector data. When <b>hint(ENABLE_NATIVE_FONTS)</b> is used with
-		/// the JAVA2D renderer, the native version of a font will be used if it is
-		/// installed on the user's machine.<br />
-		/// <br />
-		/// Using <b>createFont()</b> (instead of loadFont) enables vector data to
-		/// be used with the JAVA2D (default) renderer setting. This can be helpful
-		/// when many font sizes are needed, or when using any renderer based on
-		/// JAVA2D, such as the PDF library.
-		///
-		/// ( end auto-generated )
-		/// @webref typography:loading_displaying </summary>
-		/// <param name="filename"> name of the font to load </param>
-		/// <seealso cref= PFont </seealso>
-		/// <seealso cref= PGraphics#textFont(PFont, float) </seealso>
-		/// <seealso cref= PApplet#createFont(String, float, boolean, char[]) </seealso>
-		public virtual PFont loadFont(string filename)
-		{
-			try
-			{
-				InputStream input = createInput(filename);
-				return new PFont(input);
-
-			}
-			catch (Exception e)
-			{
-				die("Could not load font " + filename + ". " + "Make sure that the font has been copied " + "to the data folder of your sketch.", e);
-			}
-			return null;
-		}
-
-
-		/// <summary>
-		/// Used by PGraphics to remove the requirement for loading a font!
-		/// </summary>
-		protected internal virtual PFont createDefaultFont(float size)
-		{
-			//    Font f = new Font("SansSerif", Font.PLAIN, 12);
-			//    println("n: " + f.getName());
-			//    println("fn: " + f.getFontName());
-			//    println("ps: " + f.getPSName());
-			return createFont("Lucida Sans", size, true, null);
-		}
-
-
-		public virtual PFont createFont(string name, float size)
-		{
-			return createFont(name, size, true, null);
-		}
-
-
-		public virtual PFont createFont(string name, float size, bool smooth)
-		{
-			return createFont(name, size, smooth, null);
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from createFont.xml )
-		///
-		/// Dynamically converts a font to the format used by Processing from either
-		/// a font name that's installed on the computer, or from a .ttf or .otf
-		/// file inside the sketches "data" folder. This function is an advanced
-		/// feature for precise control. On most occasions you should create fonts
-		/// through selecting "Create Font..." from the Tools menu.
-		/// <br /><br />
-		/// Use the <b>PFont.list()</b> method to first determine the names for the
-		/// fonts recognized by the computer and are compatible with this function.
-		/// Because of limitations in Java, not all fonts can be used and some might
-		/// work with one operating system and not others. When sharing a sketch
-		/// with other people or posting it on the web, you may need to include a
-		/// .ttf or .otf version of your font in the data directory of the sketch
-		/// because other people might not have the font installed on their
-		/// computer. Only fonts that can legally be distributed should be included
-		/// with a sketch.
-		/// <br /><br />
-		/// The <b>size</b> parameter states the font size you want to generate. The
-		/// <b>smooth</b> parameter specifies if the font should be antialiased or
-		/// not, and the <b>charset</b> parameter is an array of chars that
-		/// specifies the characters to generate.
-		/// <br /><br />
-		/// This function creates a bitmapped version of a font in the same manner
-		/// as the Create Font tool. It loads a font by name, and converts it to a
-		/// series of images based on the size of the font. When possible, the
-		/// <b>text()</b> function will use a native font rather than the bitmapped
-		/// version created behind the scenes with <b>createFont()</b>. For
-		/// instance, when using P2D, the actual native version of the font will be
-		/// employed by the sketch, improving drawing quality and performance. With
-		/// the P3D renderer, the bitmapped version will be used. While this can
-		/// drastically improve speed and appearance, results are poor when
-		/// exporting if the sketch does not include the .otf or .ttf file, and the
-		/// requested font is not available on the machine running the sketch.
-		///
-		/// ( end auto-generated )
-		/// @webref typography:loading_displaying </summary>
-		/// <param name="name"> name of the font to load </param>
-		/// <param name="size"> point size of the font </param>
-		/// <param name="smooth"> true for an antialiased font, false for aliased </param>
-		/// <param name="charset"> array containing characters to be generated </param>
-		/// <seealso cref= PFont </seealso>
-		/// <seealso cref= PGraphics#textFont(PFont, float) </seealso>
-		/// <seealso cref= PGraphics#text(String, float, float, float, float, float) </seealso>
-		/// <seealso cref= PApplet#loadFont(String) </seealso>
-		public virtual PFont createFont(string name, float size, bool smooth, char[] charset)
-		{
-			string lowerName = name.ToLower();
-			Font baseFont = null;
-
-			try
-			{
-				InputStream stream = null;
-				if (lowerName.EndsWith(".otf") || lowerName.EndsWith(".ttf"))
-				{
-					stream = createInput(name);
-					if (stream == null)
-					{
-						Console.Error.WriteLine("The font \"" + name + "\" " + "is missing or inaccessible, make sure " + "the URL is valid or that the file has been " + "added to your sketch and is readable.");
-						return null;
-					}
-					baseFont = Font.createFont(Font.TRUETYPE_FONT, createInput(name));
-
-				}
-				else
-				{
-					baseFont = PFont.findFont(name);
-				}
-				return new PFont(baseFont.deriveFont(size), smooth, charset, stream != null);
-
-			}
-			catch (Exception e)
-			{
-				Console.Error.WriteLine("Problem createFont(" + name + ")");
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return null;
-			}
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// FILE/FOLDER SELECTION
-
-		// TODO: implement Frame if necessary
-
-//		private Frame selectFrame_Renamed;
-
-//		private Frame selectFrame()
+//		protected internal virtual PImage loadImageMT(Image awtImage)
 //		{
-//			if (frame != null)
+//			MediaTracker tracker = new MediaTracker(this);
+//			tracker.addImage(awtImage, 0);
+//			try
 //			{
-//				selectFrame_Renamed = frame;
+//				tracker.waitForAll();
+//			}
+//			catch (InterruptedException)
+//			{
+//				//e.printStackTrace();  // non-fatal, right?
+//			}
+//
+//			PImage image = new PImage(awtImage);
+//			image.parent = this;
+//			return image;
+//		}
+//
+//
+//		/// <summary>
+//		/// Use Java 1.4 ImageIO methods to load an image.
+//		/// </summary>
+//		protected internal virtual PImage loadImageIO(string filename)
+//		{
+//			InputStream stream = createInput(filename);
+//			if (stream == null)
+//			{
+//				Console.Error.WriteLine("The image " + filename + " could not be found.");
+//				return null;
+//			}
+//
+//			try
+//			{
+//				BufferedImage bi = ImageIO.read(stream);
+//				PImage outgoing = new PImage(bi.Width, bi.Height);
+//				outgoing.parent = this;
+//
+//				bi.getRGB(0, 0, outgoing.width, outgoing.height, outgoing.pixels, 0, outgoing.width);
+//
+//				// check the alpha for this image
+//				// was gonna call getType() on the image to see if RGB or ARGB,
+//				// but it's not actually useful, since gif images will come through
+//				// as TYPE_BYTE_INDEXED, which means it'll still have to check for
+//				// the transparency. also, would have to iterate through all the other
+//				// types and guess whether alpha was in there, so.. just gonna stick
+//				// with the old method.
+//				outgoing.checkAlpha();
+//
+//				// return the image
+//				return outgoing;
 //
 //			}
-//			else if (selectFrame_Renamed == null)
+//			catch (Exception e)
 //			{
-//				Component comp = Parent;
-//				while (comp != null)
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return null;
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// Targa image loader for RLE-compressed TGA files.
+//		/// <para>
+//		/// Rewritten for 0115 to read/write RLE-encoded targa images.
+//		/// For 0125, non-RLE encoded images are now supported, along with
+//		/// images whose y-order is reversed (which is standard for TGA files).
+//		/// </para>
+//		/// <para>
+//		/// A version of this function is in MovieMaker.java. Any fixes here
+//		/// should be applied over in MovieMaker as well.
+//		/// </para>
+//		/// <para>
+//		/// Known issue with RLE encoding and odd behavior in some apps:
+//		/// https://github.com/processing/processing/issues/2096
+//		/// Please help!
+//		/// </para>
+//		/// </summary>
+//		//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
+//		//ORIGINAL LINE: protected PImage loadImageTGA(String filename) throws IOException
+//		protected internal virtual PImage loadImageTGA(string filename)
+//		{
+//			InputStream @is = createInput(filename);
+//			if (@is == null)
+//			{
+//				return null;
+//			}
+//
+//			sbyte[] header = new sbyte[18];
+//			int offset = 0;
+//			do
+//			{
+//				int count = @is.read(header, offset, header.Length - offset);
+//				if (count == -1)
 //				{
-//					if (comp is Frame)
+//					return null;
+//				}
+//				offset += count;
+//			}
+//			while (offset < 18);
+//
+//			/*
+//			header[2] image type code
+//			2  (0x02) - Uncompressed, RGB images.
+//			3  (0x03) - Uncompressed, black and white images.
+//			10 (0x0A) - Run-length encoded RGB images.
+//			11 (0x0B) - Compressed, black and white images. (grayscale?)
+//
+//			header[16] is the bit depth (8, 24, 32)
+//
+//			header[17] image descriptor (packed bits)
+//			0x20 is 32 = origin upper-left
+//			0x28 is 32 + 8 = origin upper-left + 32 bits
+//
+//			7  6  5  4  3  2  1  0
+//			128 64 32 16  8  4  2  1
+//			*/
+//
+//			int format = 0;
+//
+//			if (((header[2] == 3) || (header[2] == 11)) && (header[16] == 8) && ((header[17] == 0x8) || (header[17] == 0x28))) // origin, 32 bit -  8 bits -  B&W, plus RLE or not
+//			{
+//				format = PConstants_Fields.ALPHA;
+//
+//			} // RGB, RLE or not
+//			else if (((header[2] == 2) || (header[2] == 10)) && (header[16] == 24) && ((header[17] == 0x20) || (header[17] == 0))) // origin -  24 bits
+//			{
+//				format = PConstants_Fields.RGB;
+//
+//			}
+//			else if (((header[2] == 2) || (header[2] == 10)) && (header[16] == 32) && ((header[17] == 0x8) || (header[17] == 0x28))) // origin, 32
+//			{
+//				format = PConstants_Fields.ARGB;
+//			}
+//
+//			if (format == 0)
+//			{
+//				Console.Error.WriteLine("Unknown .tga file format for " + filename);
+//				//" (" + header[2] + " " +
+//				//(header[16] & 0xff) + " " +
+//				//hex(header[17], 2) + ")");
+//				return null;
+//			}
+//
+//			int w = ((header[13] & 0xff) << 8) + (header[12] & 0xff);
+//			int h = ((header[15] & 0xff) << 8) + (header[14] & 0xff);
+//			PImage outgoing = createImage(w, h, format);
+//
+//			// where "reversed" means upper-left corner (normal for most of
+//			// the modernized world, but "reversed" for the tga spec)
+//			//boolean reversed = (header[17] & 0x20) != 0;
+//			// https://github.com/processing/processing/issues/1682
+//			bool reversed = (header[17] & 0x20) == 0;
+//
+//			if ((header[2] == 2) || (header[2] == 3)) // not RLE encoded
+//			{
+//				if (reversed)
+//				{
+//					int index = (h - 1) * w;
+//					switch (format)
 //					{
-//						selectFrame_Renamed = (Frame) comp;
+//					case PConstants_Fields.ALPHA:
+//						for (int y = h - 1; y >= 0; y--)
+//						{
+//							for (int x = 0; x < w; x++)
+//							{
+//								outgoing.pixels[index + x] = @is.read();
+//							}
+//							index -= w;
+//						}
+//						break;
+//					case PConstants_Fields.RGB:
+//						for (int y = h - 1; y >= 0; y--)
+//						{
+//							for (int x = 0; x < w; x++)
+//							{
+//								outgoing.pixels[index + x] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | unchecked((int)0xff000000);
+//							}
+//							index -= w;
+//						}
+//						break;
+//					case PConstants_Fields.ARGB:
+//						for (int y = h - 1; y >= 0; y--)
+//						{
+//							for (int x = 0; x < w; x++)
+//							{
+//								outgoing.pixels[index + x] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24);
+//							}
+//							index -= w;
+//						}
 //						break;
 //					}
-//					comp = comp.Parent;
-//				}
-//				// Who you callin' a hack?
-//				if (selectFrame_Renamed == null)
+//				} // not reversed
+//				else
 //				{
-//					selectFrame_Renamed = new Frame();
-//				}
-//			}
-//			return selectFrame_Renamed;
-//		}
-
-
-		/// <summary>
-		/// Open a platform-specific file chooser dialog to select a file for input.
-		/// After the selection is made, the selected File will be passed to the
-		/// 'callback' function. If the dialog is closed or canceled, null will be
-		/// sent to the function, so that the program is not waiting for additional
-		/// input. The callback is necessary because of how threading works.
-		///
-		/// <pre>
-		/// void setup() {
-		///   selectInput("Select a file to process:", "fileSelected");
-		/// }
-		///
-		/// void fileSelected(File selection) {
-		///   if (selection == null) {
-		///     println("Window was closed or the user hit cancel.");
-		///   } else {
-		///     println("User selected " + fileSeleted.getAbsolutePath());
-		///   }
-		/// }
-		/// </pre>
-		///
-		/// For advanced users, the method must be 'public', which is true for all
-		/// methods inside a sketch when run from the PDE, but must explicitly be
-		/// set when using Eclipse or other development environments.
-		///
-		/// @webref input:files </summary>
-		/// <param name="prompt"> message to the user </param>
-		/// <param name="callback"> name of the method to be called when the selection is made </param>
-		public virtual void selectInput(string prompt, string callback)
-		{
-			selectInput(prompt, callback, null);
-		}
-
-
-		public virtual void selectInput(string prompt, string callback, File file)
-		{
-			selectInput(prompt, callback, file, this);
-		}
-
-
-		public virtual void selectInput(string prompt, string callback, File file, object callbackObject)
-		{
-			selectInput(prompt, callback, file, callbackObject, selectFrame());
-		}
-
-
-		public static void selectInput(string prompt, string callbackMethod, File file, object callbackObject, Frame parent)
-		{
-			selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD);
-		}
-
-
-		/// <summary>
-		/// See selectInput() for details.
-		///
-		/// @webref output:files </summary>
-		/// <param name="prompt"> message to the user </param>
-		/// <param name="callback"> name of the method to be called when the selection is made </param>
-		public virtual void selectOutput(string prompt, string callback)
-		{
-			selectOutput(prompt, callback, null);
-		}
-
-		public virtual void selectOutput(string prompt, string callback, File file)
-		{
-			selectOutput(prompt, callback, file, this);
-		}
-
-
-		public virtual void selectOutput(string prompt, string callback, File file, object callbackObject)
-		{
-			selectOutput(prompt, callback, file, callbackObject, selectFrame());
-		}
-
-
-		public static void selectOutput(string prompt, string callbackMethod, File file, object callbackObject, Frame parent)
-		{
-			selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE);
-		}
-
-
-		//JAVA TO C# CONVERTER WARNING: 'final' parameters are not allowed in .NET:
-		//ORIGINAL LINE: protected static void selectImpl(final String prompt, final String callbackMethod, final File defaultSelection, final Object callbackObject, final Frame parentFrame, final int mode)
-		protected internal static void selectImpl(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame, int mode)
-		{
-			EventQueue.invokeLater(new RunnableAnonymousInnerClassHelper(prompt, callbackMethod, defaultSelection, callbackObject, parentFrame, mode));
-		}
-
-		private partial class RunnableAnonymousInnerClassHelper : Runnable
-		{
-			private string prompt;
-			private string callbackMethod;
-			private File defaultSelection;
-			private object callbackObject;
-			private Frame parentFrame;
-			private int mode;
-
-			public RunnableAnonymousInnerClassHelper(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame, int mode)
-			{
-				this.prompt = prompt;
-				this.callbackMethod = callbackMethod;
-				this.defaultSelection = defaultSelection;
-				this.callbackObject = callbackObject;
-				this.parentFrame = parentFrame;
-				this.mode = mode;
-			}
-
-			public virtual void run()
-			{
-				File selectedFile = null;
-
-				if (useNativeSelect)
-				{
-					FileDialog dialog = new FileDialog(parentFrame, prompt, mode);
-					if (defaultSelection != null)
-					{
-						dialog.Directory = defaultSelection.Parent;
-						dialog.File = defaultSelection.Name;
-					}
-					dialog.Visible = true;
-					string directory = dialog.Directory;
-					string filename = dialog.File;
-					if (filename != null)
-					{
-						selectedFile = new File(directory, filename);
-					}
-
-				}
-				else
-				{
-					JFileChooser chooser = new JFileChooser();
-					chooser.DialogTitle = prompt;
-					if (defaultSelection != null)
-					{
-						chooser.SelectedFile = defaultSelection;
-					}
-
-					int result = -1;
-					if (mode == FileDialog.SAVE)
-					{
-						result = chooser.showSaveDialog(parentFrame);
-					}
-					else if (mode == FileDialog.LOAD)
-					{
-						result = chooser.showOpenDialog(parentFrame);
-					}
-					if (result == JFileChooser.APPROVE_OPTION)
-					{
-						selectedFile = chooser.SelectedFile;
-					}
-				}
-				selectCallback(selectedFile, callbackMethod, callbackObject);
-			}
-		}
-
-
-		/// <summary>
-		/// See selectInput() for details.
-		///
-		/// @webref input:files </summary>
-		/// <param name="prompt"> message to the user </param>
-		/// <param name="callback"> name of the method to be called when the selection is made </param>
-		public virtual void selectFolder(string prompt, string callback)
-		{
-			selectFolder(prompt, callback, null);
-		}
-
-
-		public virtual void selectFolder(string prompt, string callback, File file)
-		{
-			selectFolder(prompt, callback, file, this);
-		}
-
-
-		public virtual void selectFolder(string prompt, string callback, File file, object callbackObject)
-		{
-			selectFolder(prompt, callback, file, callbackObject, selectFrame());
-		}
-
-
-		//JAVA TO C# CONVERTER WARNING: 'final' parameters are not allowed in .NET:
-		//ORIGINAL LINE: public static void selectFolder(final String prompt, final String callbackMethod, final File defaultSelection, final Object callbackObject, final Frame parentFrame)
-		public static void selectFolder(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame)
-		{
-			EventQueue.invokeLater(new RunnableAnonymousInnerClassHelper2(prompt, callbackMethod, defaultSelection, callbackObject, parentFrame));
-		}
-
-		private class RunnableAnonymousInnerClassHelper2 : Runnable
-		{
-			private string prompt;
-			private string callbackMethod;
-			private File defaultSelection;
-			private object callbackObject;
-			private Frame parentFrame;
-
-			public RunnableAnonymousInnerClassHelper2(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame)
-			{
-				this.prompt = prompt;
-				this.callbackMethod = callbackMethod;
-				this.defaultSelection = defaultSelection;
-				this.callbackObject = callbackObject;
-				this.parentFrame = parentFrame;
-			}
-
-			public virtual void run()
-			{
-				File selectedFile = null;
-
-				if (platform == PConstants_Fields.MACOSX && useNativeSelect != false)
-				{
-					FileDialog fileDialog = new FileDialog(parentFrame, prompt, FileDialog.LOAD);
-					System.setProperty("apple.awt.fileDialogForDirectories", "true");
-					fileDialog.Visible = true;
-					System.setProperty("apple.awt.fileDialogForDirectories", "false");
-					string filename = fileDialog.File;
-					if (filename != null)
-					{
-						selectedFile = new File(fileDialog.Directory, fileDialog.File);
-					}
-				}
-				else
-				{
-					JFileChooser fileChooser = new JFileChooser();
-					fileChooser.DialogTitle = prompt;
-					fileChooser.FileSelectionMode = JFileChooser.DIRECTORIES_ONLY;
-					if (defaultSelection != null)
-					{
-						fileChooser.SelectedFile = defaultSelection;
-					}
-
-					int result = fileChooser.showOpenDialog(parentFrame);
-					if (result == JFileChooser.APPROVE_OPTION)
-					{
-						selectedFile = fileChooser.SelectedFile;
-					}
-				}
-				selectCallback(selectedFile, callbackMethod, callbackObject);
-			}
-		}
-
-
-		private static void selectCallback(File selectedFile, string callbackMethod, object callbackObject)
-		{
-			try
-			{
-				Type callbackClass = callbackObject.GetType();
-				Method selectMethod = callbackClass.GetMethod(callbackMethod, new Type[] {typeof(File)});
-				selectMethod.invoke(callbackObject, new object[] {selectedFile});
-
-			}
-			catch (IllegalAccessException)
-			{
-				Console.Error.WriteLine(callbackMethod + "() must be public");
-
-			}
-			catch (InvocationTargetException ite)
-			{
-				Console.WriteLine(ite.ToString());
-				Console.Write(ite.StackTrace);
-
-			}
-			catch (NoSuchMethodException)
-			{
-				Console.Error.WriteLine(callbackMethod + "() could not be found");
-			}
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// EXTENSIONS
-
-
-		/// <summary>
-		/// Get the compression-free extension for this filename. </summary>
-		/// <param name="filename"> The filename to check </param>
-		/// <returns> an extension, skipping past .gz if it's present </returns>
-		public static string checkExtension(string filename)
-		{
-			// Don't consider the .gz as part of the name, createInput()
-			// and createOuput() will take care of fixing that up.
-			if (filename.ToLower().EndsWith(".gz"))
-			{
-				filename = filename.Substring(0, filename.Length - 3);
-			}
-			int dotIndex = filename.LastIndexOf('.');
-			if (dotIndex != -1)
-			{
-				return filename.Substring(dotIndex + 1).ToLower();
-			}
-			return null;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// READERS AND WRITERS
-
-
-		/// <summary>
-		/// ( begin auto-generated from createReader.xml )
-		///
-		/// Creates a <b>BufferedReader</b> object that can be used to read files
-		/// line-by-line as individual <b>String</b> objects. This is the complement
-		/// to the <b>createWriter()</b> function.
-		/// <br/> <br/>
-		/// Starting with Processing release 0134, all files loaded and saved by the
-		/// Processing API use UTF-8 encoding. In previous releases, the default
-		/// encoding for your platform was used, which causes problems when files
-		/// are moved to other platforms.
-		///
-		/// ( end auto-generated )
-		/// @webref input:files </summary>
-		/// <param name="filename"> name of the file to be opened </param>
-		/// <seealso cref= BufferedReader </seealso>
-		/// <seealso cref= PApplet#createWriter(String) </seealso>
-		/// <seealso cref= PrintWriter </seealso>
-		public virtual BufferedReader createReader(string filename)
-		{
-			try
-			{
-				InputStream @is = createInput(filename);
-				if (@is == null)
-				{
-					Console.Error.WriteLine(filename + " does not exist or could not be read");
-					return null;
-				}
-				return createReader(@is);
-
-			}
-			catch (Exception)
-			{
-				if (filename == null)
-				{
-					Console.Error.WriteLine("Filename passed to reader() was null");
-				}
-				else
-				{
-					Console.Error.WriteLine("Couldn't create a reader for " + filename);
-				}
-			}
-			return null;
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static BufferedReader createReader(File file)
-		{
-			try
-			{
-				InputStream @is = new FileInputStream(file);
-				if (file.Name.ToLower().EndsWith(".gz"))
-				{
-					@is = new GZIPInputStream(@is);
-				}
-				return createReader(@is);
-
-			}
-			catch (Exception e)
-			{
-				if (file == null)
-				{
-					throw new Exception("File passed to createReader() was null");
-				}
-				else
-				{
-					Console.WriteLine(e.ToString());
-					Console.Write(e.StackTrace);
-					throw new Exception("Couldn't create a reader for " + file.AbsolutePath);
-				}
-			}
-			//return null;
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// I want to read lines from a stream. If I have to type the
-		/// following lines any more I'm gonna send Sun my medical bills.
-		/// </summary>
-		public static BufferedReader createReader(InputStream input)
-		{
-			InputStreamReader isr = null;
-			try
-			{
-				isr = new InputStreamReader(input, "UTF-8");
-			} // not gonna happen
-			catch (UnsupportedEncodingException)
-			{
-			}
-			return new BufferedReader(isr);
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from createWriter.xml )
-		///
-		/// Creates a new file in the sketch folder, and a <b>PrintWriter</b> object
-		/// to write to it. For the file to be made correctly, it should be flushed
-		/// and must be closed with its <b>flush()</b> and <b>close()</b> methods
-		/// (see above example).
-		/// <br/> <br/>
-		/// Starting with Processing release 0134, all files loaded and saved by the
-		/// Processing API use UTF-8 encoding. In previous releases, the default
-		/// encoding for your platform was used, which causes problems when files
-		/// are moved to other platforms.
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref output:files </summary>
-		/// <param name="filename"> name of the file to be created </param>
-		/// <seealso cref= PrintWriter </seealso>
-		/// <seealso cref= PApplet#createReader </seealso>
-		/// <seealso cref= BufferedReader </seealso>
-		public virtual PrintWriter createWriter(string filename)
-		{
-			return createWriter(saveFile(filename));
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// I want to print lines to a file. I have RSI from typing these
-		/// eight lines of code so many times.
-		/// </summary>
-		public static PrintWriter createWriter(File file)
-		{
-			try
-			{
-				createPath(file); // make sure in-between folders exist
-				OutputStream output = new FileOutputStream(file);
-				if (file.Name.ToLower().EndsWith(".gz"))
-				{
-					output = new GZIPOutputStream(output);
-				}
-				return createWriter(output);
-
-			}
-			catch (Exception e)
-			{
-				if (file == null)
-				{
-					throw new Exception("File passed to createWriter() was null");
-				}
-				else
-				{
-					Console.WriteLine(e.ToString());
-					Console.Write(e.StackTrace);
-					throw new Exception("Couldn't create a writer for " + file.AbsolutePath);
-				}
-			}
-			//return null;
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// I want to print lines to a file. Why am I always explaining myself?
-		/// It's the JavaSoft API engineers who need to explain themselves.
-		/// </summary>
-		public static PrintWriter createWriter(OutputStream output)
-		{
-			try
-			{
-				BufferedOutputStream bos = new BufferedOutputStream(output, 8192);
-				OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");
-				return new PrintWriter(osw);
-			} // not gonna happen
-			catch (UnsupportedEncodingException)
-			{
-			}
-			return null;
-		}
-
-
-		//////////////////////////////////////////////////////////////
-
-		// FILE INPUT
-
-
-		/// @deprecated As of release 0136, use createInput() instead.
-		public virtual InputStream openStream(string filename)
-		{
-			return createInput(filename);
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from createInput.xml )
-		///
-		/// This is a function for advanced programmers to open a Java InputStream.
-		/// It's useful if you want to use the facilities provided by PApplet to
-		/// easily open files from the data folder or from a URL, but want an
-		/// InputStream object so that you can use other parts of Java to take more
-		/// control of how the stream is read.<br />
-		/// <br />
-		/// The filename passed in can be:<br />
-		/// - A URL, for instance <b>openStream("http://processing.org/")</b><br />
-		/// - A file in the sketch's <b>data</b> folder<br />
-		/// - The full path to a file to be opened locally (when running as an
-		/// application)<br />
-		/// <br />
-		/// If the requested item doesn't exist, null is returned. If not online,
-		/// this will also check to see if the user is asking for a file whose name
-		/// isn't properly capitalized. If capitalization is different, an error
-		/// will be printed to the console. This helps prevent issues that appear
-		/// when a sketch is exported to the web, where case sensitivity matters, as
-		/// opposed to running from inside the Processing Development Environment on
-		/// Windows or Mac OS, where case sensitivity is preserved but ignored.<br />
-		/// <br />
-		/// If the file ends with <b>.gz</b>, the stream will automatically be gzip
-		/// decompressed. If you don't want the automatic decompression, use the
-		/// related function <b>createInputRaw()</b>.
-		/// <br />
-		/// In earlier releases, this function was called <b>openStream()</b>.<br />
-		/// <br />
-		///
-		/// ( end auto-generated )
-		///
-		/// <h3>Advanced</h3>
-		/// Simplified method to open a Java InputStream.
-		/// <para>
-		/// This method is useful if you want to use the facilities provided
-		/// by PApplet to easily open things from the data folder or from a URL,
-		/// but want an InputStream object so that you can use other Java
-		/// methods to take more control of how the stream is read.
-		/// </para>
-		/// <para>
-		/// If the requested item doesn't exist, null is returned.
-		/// (Prior to 0096, die() would be called, killing the applet)
-		/// </para>
-		/// <para>
-		/// For 0096+, the "data" folder is exported intact with subfolders,
-		/// and openStream() properly handles subdirectories from the data folder
-		/// </para>
-		/// <para>
-		/// If not online, this will also check to see if the user is asking
-		/// for a file whose name isn't properly capitalized. This helps prevent
-		/// issues when a sketch is exported to the web, where case sensitivity
-		/// matters, as opposed to Windows and the Mac OS default where
-		/// case sensitivity is preserved but ignored.
-		/// </para>
-		/// <para>
-		/// It is strongly recommended that libraries use this method to open
-		/// data files, so that the loading sequence is handled in the same way
-		/// as functions like loadBytes(), loadImage(), etc.
-		/// </para>
-		/// <para>
-		/// The filename passed in can be:
-		/// <UL>
-		/// <LI>A URL, for instance openStream("http://processing.org/");
-		/// <LI>A file in the sketch's data folder
-		/// <LI>Another file to be opened locally (when running as an application)
-		/// </UL>
-		///
-		/// @webref input:files
-		/// </para>
-		/// </summary>
-		/// <param name="filename"> the name of the file to use as input </param>
-		/// <seealso cref= PApplet#createOutput(String) </seealso>
-		/// <seealso cref= PApplet#selectOutput(String) </seealso>
-		/// <seealso cref= PApplet#selectInput(String)
-		///  </seealso>
-		public virtual InputStream createInput(string filename)
-		{
-			InputStream input = createInputRaw(filename);
-			if ((input != null) && filename.ToLower().EndsWith(".gz"))
-			{
-				try
-				{
-					return new GZIPInputStream(input);
-				}
-				catch (IOException e)
-				{
-					Console.WriteLine(e.ToString());
-					Console.Write(e.StackTrace);
-					return null;
-				}
-			}
-			return input;
-		}
-
-
-		/// <summary>
-		/// Call openStream() without automatic gzip decompression.
-		/// </summary>
-		public virtual InputStream createInputRaw(string filename)
-		{
-			InputStream stream = null;
-
-			if (filename == null)
-			{
-				return null;
-			}
-
-			if (filename.Length == 0)
-			{
-				// an error will be called by the parent function
-				//System.err.println("The filename passed to openStream() was empty.");
-				return null;
-			}
-
-			// safe to check for this as a url first. this will prevent online
-			// access logs from being spammed with GET /sketchfolder/http://blahblah
-			if (filename.Contains(":")) // at least smells like URL
-			{
-				try
-				{
-					URL url = new URL(filename);
-					stream = url.openStream();
-					return stream;
-
-				}
-				catch (MalformedURLException)
-				{
-					// not a url, that's fine
-
-				}
-				catch (FileNotFoundException)
-				{
-					// Java 1.5 likes to throw this when URL not available. (fix for 0119)
-					// http://dev.processing.org/bugs/show_bug.cgi?id=403
-
-				}
-				catch (IOException e)
-				{
-					// changed for 0117, shouldn't be throwing exception
-					Console.WriteLine(e.ToString());
-					Console.Write(e.StackTrace);
-					//System.err.println("Error downloading from URL " + filename);
-					return null;
-					//throw new RuntimeException("Error downloading from URL " + filename);
-				}
-			}
-
-			// Moved this earlier than the getResourceAsStream() checks, because
-			// calling getResourceAsStream() on a directory lists its contents.
-			// http://dev.processing.org/bugs/show_bug.cgi?id=716
-			try
-			{
-				// First see if it's in a data folder. This may fail by throwing
-				// a SecurityException. If so, this whole block will be skipped.
-				File file = new File(dataPath(filename));
-				if (!file.exists())
-				{
-					// next see if it's just in the sketch folder
-					file = sketchFile(filename);
-				}
-
-				if (file.Directory)
-				{
-					return null;
-				}
-				if (file.exists())
-				{
-					try
-					{
-						// handle case sensitivity check
-						string filePath = file.CanonicalPath;
-						string filenameActual = (new System.IO.FileInfo(filePath)).Name;
-						// make sure there isn't a subfolder prepended to the name
-						string filenameShort = (new System.IO.FileInfo(filename)).Name;
-						// if the actual filename is the same, but capitalized
-						// differently, warn the user.
-						//if (filenameActual.equalsIgnoreCase(filenameShort) &&
-						//!filenameActual.equals(filenameShort)) {
-						if (!filenameActual.Equals(filenameShort))
-						{
-							throw new Exception("This file is named " + filenameActual + " not " + filename + ". Rename the file " + "or change your code.");
-						}
-					}
-					catch (IOException)
-					{
-					}
-				}
-
-				// if this file is ok, may as well just load it
-				stream = new FileInputStream(file);
-				if (stream != null)
-				{
-					return stream;
-				}
-
-				// have to break these out because a general Exception might
-				// catch the RuntimeException being thrown above
-			}
-			catch (IOException)
-			{
-			}
-			catch (SecurityException)
-			{
-			}
-
-			// Using getClassLoader() prevents java from converting dots
-			// to slashes or requiring a slash at the beginning.
-			// (a slash as a prefix means that it'll load from the root of
-			// the jar, rather than trying to dig into the package location)
-			ClassLoader cl = this.GetType().ClassLoader;
-
-			// by default, data files are exported to the root path of the jar.
-			// (not the data folder) so check there first.
-			stream = cl.getResourceAsStream("data/" + filename);
-			if (stream != null)
-			{
-				//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-				string cn = stream.GetType().FullName;
-				// this is an irritation of sun's java plug-in, which will return
-				// a non-null stream for an object that doesn't exist. like all good
-				// things, this is probably introduced in java 1.5. awesome!
-				// http://dev.processing.org/bugs/show_bug.cgi?id=359
-				if (!cn.Equals("sun.plugin.cache.EmptyInputStream"))
-				{
-					return stream;
-				}
-			}
-
-			// When used with an online script, also need to check without the
-			// data folder, in case it's not in a subfolder called 'data'.
-			// http://dev.processing.org/bugs/show_bug.cgi?id=389
-			stream = cl.getResourceAsStream(filename);
-			if (stream != null)
-			{
-				//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-				string cn = stream.GetType().FullName;
-				if (!cn.Equals("sun.plugin.cache.EmptyInputStream"))
-				{
-					return stream;
-				}
-			}
-
-			// Finally, something special for the Internet Explorer users. Turns out
-			// that we can't get files that are part of the same folder using the
-			// methods above when using IE, so we have to resort to the old skool
-			// getDocumentBase() from teh applet dayz. 1996, my brotha.
-			try
-			{
-				URL @base = DocumentBase;
-				if (@base != null)
-				{
-					URL url = new URL(@base, filename);
-					URLConnection conn = url.openConnection();
-					return conn.InputStream;
-					//      if (conn instanceof HttpURLConnection) {
-					//      HttpURLConnection httpConnection = (HttpURLConnection) conn;
-					//      // test for 401 result (HTTP only)
-					//      int responseCode = httpConnection.getResponseCode();
-					//    }
-				}
-			} // IO or NPE or...
-			catch (Exception)
-			{
-			}
-
-			// Now try it with a 'data' subfolder. getting kinda desperate for data...
-			try
-			{
-				URL @base = DocumentBase;
-				if (@base != null)
-				{
-					URL url = new URL(@base, "data/" + filename);
-					URLConnection conn = url.openConnection();
-					return conn.InputStream;
-				}
-			}
-			catch (Exception)
-			{
-			}
-
-			try
-			{
-				// attempt to load from a local file, used when running as
-				// an application, or as a signed applet
-				try // first try to catch any security exceptions
-				{
-					try
-					{
-						stream = new FileInputStream(dataPath(filename));
-						if (stream != null)
-						{
-							return stream;
-						}
-					}
-					catch (IOException)
-					{
-					}
-
-					try
-					{
-						stream = new FileInputStream(sketchPath(filename));
-						if (stream != null)
-						{
-							return stream;
-						}
-					} // ignored
-					catch (Exception)
-					{
-					}
-
-					try
-					{
-						stream = new FileInputStream(filename);
-						if (stream != null)
-						{
-							return stream;
-						}
-					}
-					catch (IOException)
-					{
-					}
-
-				} // online, whups
-				catch (SecurityException)
-				{
-				}
-
-			}
-			catch (Exception e)
-			{
-				//die(e.getMessage(), e);
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static InputStream createInput(File file)
-		{
-			if (file == null)
-			{
-				throw new System.ArgumentException("File passed to createInput() was null");
-			}
-			try
-			{
-				InputStream input = new FileInputStream(file);
-				if (file.Name.ToLower().EndsWith(".gz"))
-				{
-					return new GZIPInputStream(input);
-				}
-				return input;
-
-			}
-			catch (IOException e)
-			{
-				Console.Error.WriteLine("Could not createInput() for " + file);
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return null;
-			}
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from loadBytes.xml )
-		///
-		/// Reads the contents of a file or url and places it in a byte array. If a
-		/// file is specified, it must be located in the sketch's "data"
-		/// directory/folder.<br />
-		/// <br />
-		/// The filename parameter can also be a URL to a file found online. For
-		/// security reasons, a Processing sketch found online can only download
-		/// files from the same server from which it came. Getting around this
-		/// restriction requires a <a
-		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</a>.
-		///
-		/// ( end auto-generated )
-		/// @webref input:files </summary>
-		/// <param name="filename"> name of a file in the data folder or a URL. </param>
-		/// <seealso cref= PApplet#loadStrings(String) </seealso>
-		/// <seealso cref= PApplet#saveStrings(String, String[]) </seealso>
-		/// <seealso cref= PApplet#saveBytes(String, byte[])
-		///  </seealso>
-		public virtual sbyte[] loadBytes(string filename)
-		{
-			InputStream @is = createInput(filename);
-			if (@is != null)
-			{
-				sbyte[] outgoing = loadBytes(@is);
-				try
-				{
-					@is.close();
-				}
-				catch (IOException e)
-				{
-					Console.WriteLine(e.ToString());
-					Console.Write(e.StackTrace); // shouldn't happen
-				}
-				return outgoing;
-			}
-
-			Console.Error.WriteLine("The file \"" + filename + "\" " + "is missing or inaccessible, make sure " + "the URL is valid or that the file has been " + "added to your sketch and is readable.");
-			return null;
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static sbyte[] loadBytes(InputStream input)
-		{
-			try
-			{
-				BufferedInputStream bis = new BufferedInputStream(input);
-				ByteArrayOutputStream @out = new ByteArrayOutputStream();
-
-				int c = bis.read();
-				while (c != -1)
-				{
-					@out.write(c);
-					c = bis.read();
-				}
-				return @out.toByteArray();
-
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				//throw new RuntimeException("Couldn't load bytes from stream");
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static sbyte[] loadBytes(File file)
-		{
-			InputStream @is = createInput(file);
-			return loadBytes(@is);
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static string[] loadStrings(File file)
-		{
-			InputStream @is = createInput(file);
-			if (@is != null)
-			{
-				string[] outgoing = loadStrings(@is);
-				try
-				{
-					@is.close();
-				}
-				catch (IOException e)
-				{
-					Console.WriteLine(e.ToString());
-					Console.Write(e.StackTrace);
-				}
-				return outgoing;
-			}
-			return null;
-		}
-
-		/// <summary>
-		/// ( begin auto-generated from loadStrings.xml )
-		///
-		/// Reads the contents of a file or url and creates a String array of its
-		/// individual lines. If a file is specified, it must be located in the
-		/// sketch's "data" directory/folder.<br />
-		/// <br />
-		/// The filename parameter can also be a URL to a file found online. For
-		/// security reasons, a Processing sketch found online can only download
-		/// files from the same server from which it came. Getting around this
-		/// restriction requires a <a
-		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</a>.
-		/// <br />
-		/// If the file is not available or an error occurs, <b>null</b> will be
-		/// returned and an error message will be printed to the console. The error
-		/// message does not halt the program, however the null value may cause a
-		/// NullPointerException if your code does not check whether the value
-		/// returned is null.
-		/// <br/> <br/>
-		/// Starting with Processing release 0134, all files loaded and saved by the
-		/// Processing API use UTF-8 encoding. In previous releases, the default
-		/// encoding for your platform was used, which causes problems when files
-		/// are moved to other platforms.
-		///
-		/// ( end auto-generated )
-		///
-		/// <h3>Advanced</h3>
-		/// Load data from a file and shove it into a String array.
-		/// <para>
-		/// Exceptions are handled internally, when an error, occurs, an
-		/// exception is printed to the console and 'null' is returned,
-		/// but the program continues running. This is a tradeoff between
-		/// 1) showing the user that there was a problem but 2) not requiring
-		/// that all i/o code is contained in try/catch blocks, for the sake
-		/// of new users (or people who are just trying to get things done
-		/// in a "scripting" fashion. If you want to handle exceptions,
-		/// use Java methods for I/O.
-		///
-		/// @webref input:files
-		/// </para>
-		/// </summary>
-		/// <param name="filename"> name of the file or url to load </param>
-		/// <seealso cref= PApplet#loadBytes(String) </seealso>
-		/// <seealso cref= PApplet#saveStrings(String, String[]) </seealso>
-		/// <seealso cref= PApplet#saveBytes(String, byte[]) </seealso>
-		public virtual string[] loadStrings(string filename)
-		{
-			InputStream @is = createInput(filename);
-			if (@is != null)
-			{
-				return loadStrings(@is);
-			}
-
-			Console.Error.WriteLine("The file \"" + filename + "\" " + "is missing or inaccessible, make sure " + "the URL is valid or that the file has been " + "added to your sketch and is readable.");
-			return null;
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static string[] loadStrings(InputStream input)
-		{
-			try
-			{
-				BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
-				return loadStrings(reader);
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-			}
-			return null;
-		}
-
-
-		public static string[] loadStrings(BufferedReader reader)
-		{
-			try
-			{
-				string[] lines = new string[100];
-				int lineCount = 0;
-				string line = null;
-				while ((line = reader.readLine()) != null)
-				{
-					if (lineCount == lines.Length)
-					{
-						string[] temp = new string[lineCount << 1];
-						Array.Copy(lines, 0, temp, 0, lineCount);
-						lines = temp;
-					}
-					lines[lineCount++] = line;
-				}
-				reader.close();
-
-				if (lineCount == lines.Length)
-				{
-					return lines;
-				}
-
-				// resize array to appropriate amount for these lines
-				string[] output = new string[lineCount];
-				Array.Copy(lines, 0, output, 0, lineCount);
-				return output;
-
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				//throw new RuntimeException("Error inside loadStrings()");
-			}
-			return null;
-		}
-
-
-
-		//////////////////////////////////////////////////////////////
-
-		// FILE OUTPUT
-
-
-		/// <summary>
-		/// ( begin auto-generated from createOutput.xml )
-		///
-		/// Similar to <b>createInput()</b>, this creates a Java <b>OutputStream</b>
-		/// for a given filename or path. The file will be created in the sketch
-		/// folder, or in the same folder as an exported application.
-		/// <br /><br />
-		/// If the path does not exist, intermediate folders will be created. If an
-		/// exception occurs, it will be printed to the console, and <b>null</b>
-		/// will be returned.
-		/// <br /><br />
-		/// This function is a convenience over the Java approach that requires you
-		/// to 1) create a FileOutputStream object, 2) determine the exact file
-		/// location, and 3) handle exceptions. Exceptions are handled internally by
-		/// the function, which is more appropriate for "sketch" projects.
-		/// <br /><br />
-		/// If the output filename ends with <b>.gz</b>, the output will be
-		/// automatically GZIP compressed as it is written.
-		///
-		/// ( end auto-generated )
-		/// @webref output:files </summary>
-		/// <param name="filename"> name of the file to open </param>
-		/// <seealso cref= PApplet#createInput(String) </seealso>
-		/// <seealso cref= PApplet#selectOutput() </seealso>
-		public virtual OutputStream createOutput(string filename)
-		{
-			return createOutput(saveFile(filename));
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static OutputStream createOutput(File file)
-		{
-			try
-			{
-				createPath(file); // make sure the path exists
-				FileOutputStream fos = new FileOutputStream(file);
-				if (file.Name.ToLower().EndsWith(".gz"))
-				{
-					return new GZIPOutputStream(fos);
-				}
-				return fos;
-
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-			}
-			return null;
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from saveStream.xml )
-		///
-		/// Save the contents of a stream to a file in the sketch folder. This is
-		/// basically <b>saveBytes(blah, loadBytes())</b>, but done more efficiently
-		/// (and with less confusing syntax).<br />
-		/// <br />
-		/// When using the <b>targetFile</b> parameter, it writes to a <b>File</b>
-		/// object for greater control over the file location. (Note that unlike
-		/// some other functions, this will not automatically compress or uncompress
-		/// gzip files.)
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref output:files </summary>
-		/// <param name="target"> name of the file to write to </param>
-		/// <param name="source"> location to read from (a filename, path, or URL) </param>
-		/// <seealso cref= PApplet#createOutput(String) </seealso>
-		public virtual bool saveStream(string target, string source)
-		{
-			return saveStream(saveFile(target), source);
-		}
-
-		/// <summary>
-		/// Identical to the other saveStream(), but writes to a File
-		/// object, for greater control over the file location.
-		/// <p/>
-		/// Note that unlike other api methods, this will not automatically
-		/// compress or uncompress gzip files.
-		/// </summary>
-		public virtual bool saveStream(File target, string source)
-		{
-			return saveStream(target, createInputRaw(source));
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public virtual bool saveStream(string target, InputStream source)
-		{
-			return saveStream(saveFile(target), source);
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static bool saveStream(File target, InputStream source)
-		{
-			File tempFile = null;
-			try
-			{
-				File parentDir = target.ParentFile;
-				// make sure that this path actually exists before writing
-				createPath(target);
-				tempFile = File.createTempFile(target.Name, null, parentDir);
-				FileOutputStream targetStream = new FileOutputStream(tempFile);
-
-				saveStream(targetStream, source);
-				targetStream.close();
-				targetStream = null;
-
-				if (target.exists())
-				{
-					if (!target.delete())
-					{
-						Console.Error.WriteLine("Could not replace " + target.AbsolutePath + ".");
-					}
-				}
-				if (!tempFile.renameTo(target))
-				{
-					Console.Error.WriteLine("Could not rename temporary file " + tempFile.AbsolutePath);
-					return false;
-				}
-				return true;
-
-			}
-			catch (IOException e)
-			{
-				if (tempFile != null)
-				{
-					tempFile.delete();
-				}
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-				return false;
-			}
-		}
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
-		//ORIGINAL LINE: public static void saveStream(OutputStream target, InputStream source) throws IOException
-		public static void saveStream(OutputStream target, InputStream source)
-		{
-			BufferedInputStream bis = new BufferedInputStream(source, 16384);
-			BufferedOutputStream bos = new BufferedOutputStream(target);
-
-			sbyte[] buffer = new sbyte[8192];
-			int bytesRead;
-			while ((bytesRead = bis.read(buffer)) != -1)
-			{
-				bos.write(buffer, 0, bytesRead);
-			}
-
-			bos.flush();
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from saveBytes.xml )
-		///
-		/// Opposite of <b>loadBytes()</b>, will write an entire array of bytes to a
-		/// file. The data is saved in binary format. This file is saved to the
-		/// sketch's folder, which is opened by selecting "Show sketch folder" from
-		/// the "Sketch" menu.<br />
-		/// <br />
-		/// It is not possible to use saveXxxxx() functions inside a web browser
-		/// unless the sketch is <a
-		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
-		/// save a file back to a server, see the <a
-		/// href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
-		/// web</A> code snippet on the Processing Wiki.
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref output:files </summary>
-		/// <param name="filename"> name of the file to write to </param>
-		/// <param name="data"> array of bytes to be written </param>
-		/// <seealso cref= PApplet#loadStrings(String) </seealso>
-		/// <seealso cref= PApplet#loadBytes(String) </seealso>
-		/// <seealso cref= PApplet#saveStrings(String, String[]) </seealso>
-		public virtual void saveBytes(string filename, sbyte[] data)
-		{
-			saveBytes(saveFile(filename), data);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// Saves bytes to a specific File location specified by the user.
-		/// </summary>
-		public static void saveBytes(File file, sbyte[] data)
-		{
-			File tempFile = null;
-			try
-			{
-				File parentDir = file.ParentFile;
-				tempFile = File.createTempFile(file.Name, null, parentDir);
-
-				OutputStream output = createOutput(tempFile);
-				saveBytes(output, data);
-				output.close();
-				output = null;
-
-				if (file.exists())
-				{
-					if (!file.delete())
-					{
-						Console.Error.WriteLine("Could not replace " + file.AbsolutePath);
-					}
-				}
-
-				if (!tempFile.renameTo(file))
-				{
-					Console.Error.WriteLine("Could not rename temporary file " + tempFile.AbsolutePath);
-				}
-
-			}
-			catch (IOException e)
-			{
-				Console.Error.WriteLine("error saving bytes to " + file);
-				if (tempFile != null)
-				{
-					tempFile.delete();
-				}
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-			}
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// Spews a buffer of bytes to an OutputStream.
-		/// </summary>
-		public static void saveBytes(OutputStream output, sbyte[] data)
-		{
-			try
-			{
-				output.write(data);
-				output.flush();
-
-			}
-			catch (IOException e)
-			{
-				Console.WriteLine(e.ToString());
-				Console.Write(e.StackTrace);
-			}
-		}
-
-
-		//
-
-		/// <summary>
-		/// ( begin auto-generated from saveStrings.xml )
-		///
-		/// Writes an array of strings to a file, one line per string. This file is
-		/// saved to the sketch's folder, which is opened by selecting "Show sketch
-		/// folder" from the "Sketch" menu.<br />
-		/// <br />
-		/// It is not possible to use saveXxxxx() functions inside a web browser
-		/// unless the sketch is <a
-		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
-		/// save a file back to a server, see the <a
-		/// href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
-		/// web</A> code snippet on the Processing Wiki.<br/>
-		/// <br/ >
-		/// Starting with Processing 1.0, all files loaded and saved by the
-		/// Processing API use UTF-8 encoding. In previous releases, the default
-		/// encoding for your platform was used, which causes problems when files
-		/// are moved to other platforms.
-		///
-		/// ( end auto-generated )
-		/// @webref output:files </summary>
-		/// <param name="filename"> filename for output </param>
-		/// <param name="data"> string array to be written </param>
-		/// <seealso cref= PApplet#loadStrings(String) </seealso>
-		/// <seealso cref= PApplet#loadBytes(String) </seealso>
-		/// <seealso cref= PApplet#saveBytes(String, byte[]) </seealso>
-		public virtual void saveStrings(string filename, string[] data)
-		{
-			saveStrings(saveFile(filename), data);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static void saveStrings(File file, string[] data)
-		{
-			saveStrings(createOutput(file), data);
-		}
-
-
-		/// <summary>
-		/// @nowebref
-		/// </summary>
-		public static void saveStrings(OutputStream output, string[] data)
-		{
-			PrintWriter writer = createWriter(output);
-			for (int i = 0; i < data.Length; i++)
-			{
-				writer.println(data[i]);
-			}
-			writer.flush();
-			writer.close();
-		}
-
-
-		//////////////////////////////////////////////////////////////
-
-
-		/// <summary>
-		/// Prepend the sketch folder path to the filename (or path) that is
-		/// passed in. External libraries should use this function to save to
-		/// the sketch folder.
-		/// <p/>
-		/// Note that when running as an applet inside a web browser,
-		/// the sketchPath will be set to null, because security restrictions
-		/// prevent applets from accessing that information.
-		/// <p/>
-		/// This will also cause an error if the sketch is not inited properly,
-		/// meaning that init() was never called on the PApplet when hosted
-		/// my some other main() or by other code. For proper use of init(),
-		/// see the examples in the main description text for PApplet.
-		/// </summary>
-		public virtual string sketchPath(string @where)
-		{
-			if (sketchPath_Renamed == null)
-			{
-				return @where;
-				//      throw new RuntimeException("The applet was not inited properly, " +
-				//                                 "or security restrictions prevented " +
-				//                                 "it from determining its path.");
-			}
-			// isAbsolute() could throw an access exception, but so will writing
-			// to the local disk using the sketch path, so this is safe here.
-			// for 0120, added a try/catch anyways.
-			try
-			{
-				if ((new File(@where)).Absolute)
-				{
-					return @where;
-				}
-			}
-			catch (Exception)
-			{
-			}
-
-			return sketchPath_Renamed + File.separator + @where;
-		}
-
-
-		public virtual File sketchFile(string @where)
-		{
-			return new File(sketchPath(@where));
-		}
-
-
-		/// <summary>
-		/// Returns a path inside the applet folder to save to. Like sketchPath(),
-		/// but creates any in-between folders so that things save properly.
-		/// <p/>
-		/// All saveXxxx() functions use the path to the sketch folder, rather than
-		/// its data folder. Once exported, the data folder will be found inside the
-		/// jar file of the exported application or applet. In this case, it's not
-		/// possible to save data into the jar file, because it will often be running
-		/// from a server, or marked in-use if running from a local file system.
-		/// With this in mind, saving to the data path doesn't make sense anyway.
-		/// If you know you're running locally, and want to save to the data folder,
-		/// use <TT>saveXxxx("data/blah.dat")</TT>.
-		/// </summary>
-		public virtual string savePath(string @where)
-		{
-			if (@where == null)
-			{
-				return null;
-			}
-			string filename = sketchPath(@where);
-			createPath(filename);
-			return filename;
-		}
-
-
-		// TODO: implement File if necessary
-
-		/// <summary>
-		/// Identical to savePath(), but returns a File object.
-		/// </summary>
-//		public virtual File saveFile(string @where)
-//		{
-//			return new File(savePath(@where));
-//		}
-
-//		internal static File desktopFolder;
-
-		/// <summary>
-		/// Not a supported function. For testing use only. </summary>
-//		public static File desktopFile(string what)
-//		{
-//			if (desktopFolder == null)
-//			{
-//				// Should work on Linux and OS X (on OS X, even with the localized version).
-//				desktopFolder = new File(System.getProperty("user.home"), "Desktop");
-//				if (!desktopFolder.exists())
-//				{
-//					if (platform == PConstants_Fields.WINDOWS)
+//					int count = w * h;
+//					switch (format)
 //					{
-//						FileSystemView filesys = FileSystemView.FileSystemView;
-//						desktopFolder = filesys.HomeDirectory;
+//					case PConstants_Fields.ALPHA:
+//						for (int i = 0; i < count; i++)
+//						{
+//							outgoing.pixels[i] = @is.read();
+//						}
+//						break;
+//					case PConstants_Fields.RGB:
+//						for (int i = 0; i < count; i++)
+//						{
+//							outgoing.pixels[i] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | unchecked((int)0xff000000);
+//						}
+//						break;
+//					case PConstants_Fields.ARGB:
+//						for (int i = 0; i < count; i++)
+//						{
+//							outgoing.pixels[i] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24);
+//						}
+//						break;
 //					}
+//				}
+//
+//			} // header[2] is 10 or 11
+//			else
+//			{
+//				int index = 0;
+//				int[] px = outgoing.pixels;
+//
+//				while (index < px.Length)
+//				{
+//					int num = @is.read();
+//					bool isRLE = (num & 0x80) != 0;
+//					if (isRLE)
+//					{
+//						num -= 127; // (num & 0x7F) + 1
+//						int pixel = 0;
+//						switch (format)
+//						{
+//						case PConstants_Fields.ALPHA:
+//							pixel = @is.read();
+//							break;
+//						case PConstants_Fields.RGB:
+//							pixel = unchecked((int)0xFF000000) | @is.read() | (@is.read() << 8) | (@is.read() << 16);
+//							//(is.read() << 16) | (is.read() << 8) | is.read();
+//							break;
+//						case PConstants_Fields.ARGB:
+//							pixel = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24);
+//							break;
+//						}
+//						for (int i = 0; i < num; i++)
+//						{
+//							px[index++] = pixel;
+//							if (index == px.Length)
+//							{
+//								break;
+//							}
+//						}
+//					} // write up to 127 bytes as uncompressed
 //					else
 //					{
-//						throw new System.NotSupportedException("Could not find a suitable desktop foldder");
+//						num += 1;
+//						switch (format)
+//						{
+//						case PConstants_Fields.ALPHA:
+//							for (int i = 0; i < num; i++)
+//							{
+//								px[index++] = @is.read();
+//							}
+//							break;
+//						case PConstants_Fields.RGB:
+//							for (int i = 0; i < num; i++)
+//							{
+//								px[index++] = unchecked((int)0xFF000000) | @is.read() | (@is.read() << 8) | (@is.read() << 16);
+//								//(is.read() << 16) | (is.read() << 8) | is.read();
+//							}
+//							break;
+//						case PConstants_Fields.ARGB:
+//							for (int i = 0; i < num; i++)
+//							{
+//								px[index++] = @is.read() | (@is.read() << 8) | (@is.read() << 16) | (@is.read() << 24); //(is.read() << 24) |
+//								//(is.read() << 16) | (is.read() << 8) | is.read();
+//							}
+//							break;
+//						}
+//					}
+//				}
+//
+//				if (!reversed)
+//				{
+//					int[] temp = new int[w];
+//					for (int y = 0; y < h / 2; y++)
+//					{
+//						int z = (h - 1) - y;
+//						Array.Copy(px, y * w, temp, 0, w);
+//						Array.Copy(px, z * w, px, y * w, w);
+//						Array.Copy(temp, 0, px, z * w, w);
 //					}
 //				}
 //			}
-//			return new File(desktopFolder, what);
+//
+//			return outgoing;
+//		}
+//
+//
+//
+//		//////////////////////////////////////////////////////////////
+//
+//		// DATA I/O
+//
+//
+//		//  /**
+//		//   * @webref input:files
+//		//   * @brief Creates a new XML object
+//		//   * @param name the name to be given to the root element of the new XML object
+//		//   * @return an XML object, or null
+//		//   * @see XML
+//		//   * @see PApplet#loadXML(String)
+//		//   * @see PApplet#parseXML(String)
+//		//   * @see PApplet#saveXML(XML, String)
+//		//   */
+//		//  public XML createXML(String name) {
+//		//    try {
+//		//      return new XML(name);
+//		//    } catch (Exception e) {
+//		//      e.printStackTrace();
+//		//      return null;
+//		//    }
+//		//  }
+//
+
+		// TODO: implement load XML if necessary
+//
+//		/// <summary>
+//		/// @webref input:files </summary>
+//		/// <param name="filename"> name of a file in the data folder or a URL. </param>
+//		/// <seealso cref= XML </seealso>
+//		/// <seealso cref= PApplet#parseXML(String) </seealso>
+//		/// <seealso cref= PApplet#saveXML(XML, String) </seealso>
+//		/// <seealso cref= PApplet#loadBytes(String) </seealso>
+//		/// <seealso cref= PApplet#loadStrings(String) </seealso>
+//		/// <seealso cref= PApplet#loadTable(String) </seealso>
+//		public virtual XML loadXML(string filename)
+//		{
+//			return loadXML(filename, null);
+//		}
+//
+//
+//		// version that uses 'options' though there are currently no supported options
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual XML loadXML(string filename, string options)
+//		{
+//			try
+//			{
+//				return new XML(createReader(filename), options);
+//				//      return new XML(createInput(filename), options);
+//			}
+//			catch (Exception e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return null;
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref input:files
+//		/// @brief Converts String content to an XML object </summary>
+//		/// <param name="data"> the content to be parsed as XML </param>
+//		/// <returns> an XML object, or null </returns>
+//		/// <seealso cref= XML </seealso>
+//		/// <seealso cref= PApplet#loadXML(String) </seealso>
+//		/// <seealso cref= PApplet#saveXML(XML, String) </seealso>
+//		public virtual XML parseXML(string xmlString)
+//		{
+//			return parseXML(xmlString, null);
+//		}
+//
+//
+//		public virtual XML parseXML(string xmlString, string options)
+//		{
+//			try
+//			{
+//				return XML.parse(xmlString, options);
+//			}
+//			catch (Exception e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return null;
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref output:files </summary>
+//		/// <param name="xml"> the XML object to save to disk </param>
+//		/// <param name="filename"> name of the file to write to </param>
+//		/// <seealso cref= XML </seealso>
+//		/// <seealso cref= PApplet#loadXML(String) </seealso>
+//		/// <seealso cref= PApplet#parseXML(String) </seealso>
+//		public virtual bool saveXML(XML xml, string filename)
+//		{
+//			return saveXML(xml, filename, null);
+//		}
+//
+//
+//		public virtual bool saveXML(XML xml, string filename, string options)
+//		{
+//			return xml.save(saveFile(filename), options);
+//		}
+//
+
+		// TODO: implement JSON if necessary
+
+//		public virtual JSONObject parseJSONObject(string input)
+//		{
+//			return new JSONObject(new StringReader(input));
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref input:files </summary>
+//		/// <param name="filename"> name of a file in the data folder or a URL </param>
+//		/// <seealso cref= JSONObject </seealso>
+//		/// <seealso cref= JSONArray </seealso>
+//		/// <seealso cref= PApplet#loadJSONArray(String) </seealso>
+//		/// <seealso cref= PApplet#saveJSONObject(JSONObject, String) </seealso>
+//		/// <seealso cref= PApplet#saveJSONArray(JSONArray, String) </seealso>
+//		public virtual JSONObject loadJSONObject(string filename)
+//		{
+//			return new JSONObject(createReader(filename));
+//		}
+//
+//
+//		public static JSONObject loadJSONObject(File file)
+//		{
+//			return new JSONObject(createReader(file));
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref output:files </summary>
+//		/// <seealso cref= JSONObject </seealso>
+//		/// <seealso cref= JSONArray </seealso>
+//		/// <seealso cref= PApplet#loadJSONObject(String) </seealso>
+//		/// <seealso cref= PApplet#loadJSONArray(String) </seealso>
+//		/// <seealso cref= PApplet#saveJSONArray(JSONArray, String) </seealso>
+//		public virtual bool saveJSONObject(JSONObject json, string filename)
+//		{
+//			return saveJSONObject(json, filename, null);
+//		}
+//
+//
+//		public virtual bool saveJSONObject(JSONObject json, string filename, string options)
+//		{
+//			return json.save(saveFile(filename), options);
+//		}
+//
+//
+//		public virtual JSONArray parseJSONArray(string input)
+//		{
+//			return new JSONArray(new StringReader(input));
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref input:files </summary>
+//		/// <param name="filename"> name of a file in the data folder or a URL </param>
+//		/// <seealso cref= JSONObject </seealso>
+//		/// <seealso cref= JSONArray </seealso>
+//		/// <seealso cref= PApplet#loadJSONObject(String) </seealso>
+//		/// <seealso cref= PApplet#saveJSONObject(JSONObject, String) </seealso>
+//		/// <seealso cref= PApplet#saveJSONArray(JSONArray, String) </seealso>
+//		public virtual JSONArray loadJSONArray(string filename)
+//		{
+//			return new JSONArray(createReader(filename));
+//		}
+//
+//
+//		public static JSONArray loadJSONArray(File file)
+//		{
+//			return new JSONArray(createReader(file));
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref output:files </summary>
+//		/// <seealso cref= JSONObject </seealso>
+//		/// <seealso cref= JSONArray </seealso>
+//		/// <seealso cref= PApplet#loadJSONObject(String) </seealso>
+//		/// <seealso cref= PApplet#loadJSONArray(String) </seealso>
+//		/// <seealso cref= PApplet#saveJSONObject(JSONObject, String) </seealso>
+//		public virtual bool saveJSONArray(JSONArray json, string filename)
+//		{
+//			return saveJSONArray(json, filename, null);
+//		}
+//
+//
+//		public virtual bool saveJSONArray(JSONArray json, string filename, string options)
+//		{
+//			return json.save(saveFile(filename), options);
+//		}
+//
+
+
+		// TOOD: implement Table if necessary
+
+//		//  /**
+//		//   * @webref input:files
+//		//   * @see Table
+//		//   * @see PApplet#loadTable(String)
+//		//   * @see PApplet#saveTable(Table, String)
+//		//   */
+//		//  public Table createTable() {
+//		//    return new Table();
+//		//  }
+//
+//
+//		/// <summary>
+//		/// @webref input:files </summary>
+//		/// <param name="filename"> name of a file in the data folder or a URL. </param>
+//		/// <seealso cref= Table </seealso>
+//		/// <seealso cref= PApplet#saveTable(Table, String) </seealso>
+//		/// <seealso cref= PApplet#loadBytes(String) </seealso>
+//		/// <seealso cref= PApplet#loadStrings(String) </seealso>
+//		/// <seealso cref= PApplet#loadXML(String) </seealso>
+//		public virtual Table loadTable(string filename)
+//		{
+//			return loadTable(filename, null);
+//		}
+//
+//
+//		/// <summary>
+//		/// Options may contain "header", "tsv", "csv", or "bin" separated by commas.
+//		///
+//		/// Another option is "dictionary=filename.tsv", which allows users to
+//		/// specify a "dictionary" file that contains a mapping of the column titles
+//		/// and the data types used in the table file. This can be far more efficient
+//		/// (in terms of speed and memory usage) for loading and parsing tables. The
+//		/// dictionary file can only be tab separated values (.tsv) and its extension
+//		/// will be ignored. This option was added in Processing 2.0.2.
+//		/// </summary>
+//		public virtual Table loadTable(string filename, string options)
+//		{
+//			try
+//			{
+//				string optionStr = Table.extensionOptions(true, filename, options);
+//				string[] optionList = Trim(Split(optionStr, ','));
+//
+//				Table dictionary = null;
+//				foreach (string opt in optionList)
+//				{
+//					if (opt.StartsWith("dictionary="))
+//					{
+//						dictionary = loadTable(opt.Substring(opt.IndexOf('=') + 1), "tsv");
+//						return dictionary.typedParse(createInput(filename), optionStr);
+//					}
+//				}
+//				return new Table(createInput(filename), optionStr);
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return null;
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// @webref output:files </summary>
+//		/// <param name="table"> the Table object to save to a file </param>
+//		/// <param name="filename"> the filename to which the Table should be saved </param>
+//		/// <seealso cref= Table </seealso>
+//		/// <seealso cref= PApplet#loadTable(String) </seealso>
+//		public virtual bool saveTable(Table table, string filename)
+//		{
+//			return saveTable(table, filename, null);
+//		}
+//
+//
+//		/// <param name="options"> can be one of "tsv", "csv", "bin", or "html" </param>
+//		public virtual bool saveTable(Table table, string filename, string options)
+//		{
+//			//    String ext = checkExtension(filename);
+//			//    if (ext != null) {
+//			//      if (ext.equals("csv") || ext.equals("tsv") || ext.equals("bin") || ext.equals("html")) {
+//			//        if (options == null) {
+//			//          options = ext;
+//			//        } else {
+//			//          options = ext + "," + options;
+//			//        }
+//			//      }
+//			//    }
+//
+//			try
+//			{
+//				// Figure out location and make sure the target path exists
+//				File outputFile = saveFile(filename);
+//				// Open a stream and take care of .gz if necessary
+//				return table.save(outputFile, options);
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return false;
+//			}
+//		}
+//
+
+//		// TODO: implemnent Font
+//
+//		//////////////////////////////////////////////////////////////
+//
+//		// FONT I/O
+//
+//		/// <summary>
+//		/// ( begin auto-generated from loadFont.xml )
+//		///
+//		/// Loads a font into a variable of type <b>PFont</b>. To load correctly,
+//		/// fonts must be located in the data directory of the current sketch. To
+//		/// create a font to use with Processing, select "Create Font..." from the
+//		/// Tools menu. This will create a font in the format Processing requires
+//		/// and also adds it to the current sketch's data directory.<br />
+//		/// <br />
+//		/// Like <b>loadImage()</b> and other functions that load data, the
+//		/// <b>loadFont()</b> function should not be used inside <b>draw()</b>,
+//		/// because it will slow down the sketch considerably, as the font will be
+//		/// re-loaded from the disk (or network) on each frame.<br />
+//		/// <br />
+//		/// For most renderers, Processing displays fonts using the .vlw font
+//		/// format, which uses images for each letter, rather than defining them
+//		/// through vector data. When <b>hint(ENABLE_NATIVE_FONTS)</b> is used with
+//		/// the JAVA2D renderer, the native version of a font will be used if it is
+//		/// installed on the user's machine.<br />
+//		/// <br />
+//		/// Using <b>createFont()</b> (instead of loadFont) enables vector data to
+//		/// be used with the JAVA2D (default) renderer setting. This can be helpful
+//		/// when many font sizes are needed, or when using any renderer based on
+//		/// JAVA2D, such as the PDF library.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref typography:loading_displaying </summary>
+//		/// <param name="filename"> name of the font to load </param>
+//		/// <seealso cref= PFont </seealso>
+//		/// <seealso cref= PGraphics#textFont(PFont, float) </seealso>
+//		/// <seealso cref= PApplet#createFont(String, float, boolean, char[]) </seealso>
+//		public virtual PFont loadFont(string filename)
+//		{
+//			try
+//			{
+//				InputStream input = createInput(filename);
+//				return new PFont(input);
+//
+//			}
+//			catch (Exception e)
+//			{
+//				die("Could not load font " + filename + ". " + "Make sure that the font has been copied " + "to the data folder of your sketch.", e);
+//			}
+//			return null;
+//		}
+//
+//
+//		/// <summary>
+//		/// Used by PGraphics to remove the requirement for loading a font!
+//		/// </summary>
+//		protected internal virtual PFont createDefaultFont(float size)
+//		{
+//			//    Font f = new Font("SansSerif", Font.PLAIN, 12);
+//			//    println("n: " + f.getName());
+//			//    println("fn: " + f.getFontName());
+//			//    println("ps: " + f.getPSName());
+//			return createFont("Lucida Sans", size, true, null);
+//		}
+//
+//
+//		public virtual PFont createFont(string name, float size)
+//		{
+//			return createFont(name, size, true, null);
+//		}
+//
+//
+//		public virtual PFont createFont(string name, float size, bool smooth)
+//		{
+//			return createFont(name, size, smooth, null);
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from createFont.xml )
+//		///
+//		/// Dynamically converts a font to the format used by Processing from either
+//		/// a font name that's installed on the computer, or from a .ttf or .otf
+//		/// file inside the sketches "data" folder. This function is an advanced
+//		/// feature for precise control. On most occasions you should create fonts
+//		/// through selecting "Create Font..." from the Tools menu.
+//		/// <br /><br />
+//		/// Use the <b>PFont.list()</b> method to first determine the names for the
+//		/// fonts recognized by the computer and are compatible with this function.
+//		/// Because of limitations in Java, not all fonts can be used and some might
+//		/// work with one operating system and not others. When sharing a sketch
+//		/// with other people or posting it on the web, you may need to include a
+//		/// .ttf or .otf version of your font in the data directory of the sketch
+//		/// because other people might not have the font installed on their
+//		/// computer. Only fonts that can legally be distributed should be included
+//		/// with a sketch.
+//		/// <br /><br />
+//		/// The <b>size</b> parameter states the font size you want to generate. The
+//		/// <b>smooth</b> parameter specifies if the font should be antialiased or
+//		/// not, and the <b>charset</b> parameter is an array of chars that
+//		/// specifies the characters to generate.
+//		/// <br /><br />
+//		/// This function creates a bitmapped version of a font in the same manner
+//		/// as the Create Font tool. It loads a font by name, and converts it to a
+//		/// series of images based on the size of the font. When possible, the
+//		/// <b>text()</b> function will use a native font rather than the bitmapped
+//		/// version created behind the scenes with <b>createFont()</b>. For
+//		/// instance, when using P2D, the actual native version of the font will be
+//		/// employed by the sketch, improving drawing quality and performance. With
+//		/// the P3D renderer, the bitmapped version will be used. While this can
+//		/// drastically improve speed and appearance, results are poor when
+//		/// exporting if the sketch does not include the .otf or .ttf file, and the
+//		/// requested font is not available on the machine running the sketch.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref typography:loading_displaying </summary>
+//		/// <param name="name"> name of the font to load </param>
+//		/// <param name="size"> point size of the font </param>
+//		/// <param name="smooth"> true for an antialiased font, false for aliased </param>
+//		/// <param name="charset"> array containing characters to be generated </param>
+//		/// <seealso cref= PFont </seealso>
+//		/// <seealso cref= PGraphics#textFont(PFont, float) </seealso>
+//		/// <seealso cref= PGraphics#text(String, float, float, float, float, float) </seealso>
+//		/// <seealso cref= PApplet#loadFont(String) </seealso>
+//		public virtual PFont createFont(string name, float size, bool smooth, char[] charset)
+//		{
+//			string lowerName = name.ToLower();
+//			Font baseFont = null;
+//
+//			try
+//			{
+//				InputStream stream = null;
+//				if (lowerName.EndsWith(".otf") || lowerName.EndsWith(".ttf"))
+//				{
+//					stream = createInput(name);
+//					if (stream == null)
+//					{
+//						Console.Error.WriteLine("The font \"" + name + "\" " + "is missing or inaccessible, make sure " + "the URL is valid or that the file has been " + "added to your sketch and is readable.");
+//						return null;
+//					}
+//					baseFont = Font.createFont(Font.TRUETYPE_FONT, createInput(name));
+//
+//				}
+//				else
+//				{
+//					baseFont = PFont.findFont(name);
+//				}
+//				return new PFont(baseFont.deriveFont(size), smooth, charset, stream != null);
+//
+//			}
+//			catch (Exception e)
+//			{
+//				Console.Error.WriteLine("Problem createFont(" + name + ")");
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return null;
+//			}
 //		}
 
 
-		/// <summary>
-		/// Not a supported function. For testing use only. </summary>
-		public static string desktopPath(string what)
-		{
-			return desktopFile(what).AbsolutePath;
-		}
+		// TODO: implemnt File I/O if necessary
 
+//		//////////////////////////////////////////////////////////////
+//
+//		// FILE/FOLDER SELECTION
+//
+//		// TODO: implement Frame if necessary
+//
+////		private Frame selectFrame_Renamed;
+//
+////		private Frame selectFrame()
+////		{
+////			if (frame != null)
+////			{
+////				selectFrame_Renamed = frame;
+////
+////			}
+////			else if (selectFrame_Renamed == null)
+////			{
+////				Component comp = Parent;
+////				while (comp != null)
+////				{
+////					if (comp is Frame)
+////					{
+////						selectFrame_Renamed = (Frame) comp;
+////						break;
+////					}
+////					comp = comp.Parent;
+////				}
+////				// Who you callin' a hack?
+////				if (selectFrame_Renamed == null)
+////				{
+////					selectFrame_Renamed = new Frame();
+////				}
+////			}
+////			return selectFrame_Renamed;
+////		}
+//
+//
+//		/// <summary>
+//		/// Open a platform-specific file chooser dialog to select a file for input.
+//		/// After the selection is made, the selected File will be passed to the
+//		/// 'callback' function. If the dialog is closed or canceled, null will be
+//		/// sent to the function, so that the program is not waiting for additional
+//		/// input. The callback is necessary because of how threading works.
+//		///
+//		/// <pre>
+//		/// void setup() {
+//		///   selectInput("Select a file to process:", "fileSelected");
+//		/// }
+//		///
+//		/// void fileSelected(File selection) {
+//		///   if (selection == null) {
+//		///     println("Window was closed or the user hit cancel.");
+//		///   } else {
+//		///     println("User selected " + fileSeleted.getAbsolutePath());
+//		///   }
+//		/// }
+//		/// </pre>
+//		///
+//		/// For advanced users, the method must be 'public', which is true for all
+//		/// methods inside a sketch when run from the PDE, but must explicitly be
+//		/// set when using Eclipse or other development environments.
+//		///
+//		/// @webref input:files </summary>
+//		/// <param name="prompt"> message to the user </param>
+//		/// <param name="callback"> name of the method to be called when the selection is made </param>
+//		public virtual void selectInput(string prompt, string callback)
+//		{
+//			selectInput(prompt, callback, null);
+//		}
+//
+//
+//		public virtual void selectInput(string prompt, string callback, File file)
+//		{
+//			selectInput(prompt, callback, file, this);
+//		}
+//
+//
+//		public virtual void selectInput(string prompt, string callback, File file, object callbackObject)
+//		{
+//			selectInput(prompt, callback, file, callbackObject, selectFrame());
+//		}
+//
+//
+//		public static void selectInput(string prompt, string callbackMethod, File file, object callbackObject, Frame parent)
+//		{
+//			selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD);
+//		}
+//
+//
+//		/// <summary>
+//		/// See selectInput() for details.
+//		///
+//		/// @webref output:files </summary>
+//		/// <param name="prompt"> message to the user </param>
+//		/// <param name="callback"> name of the method to be called when the selection is made </param>
+//		public virtual void selectOutput(string prompt, string callback)
+//		{
+//			selectOutput(prompt, callback, null);
+//		}
+//
+//		public virtual void selectOutput(string prompt, string callback, File file)
+//		{
+//			selectOutput(prompt, callback, file, this);
+//		}
+//
+//
+//		public virtual void selectOutput(string prompt, string callback, File file, object callbackObject)
+//		{
+//			selectOutput(prompt, callback, file, callbackObject, selectFrame());
+//		}
+//
+//
+//		public static void selectOutput(string prompt, string callbackMethod, File file, object callbackObject, Frame parent)
+//		{
+//			selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE);
+//		}
+//
+//
+//		//JAVA TO C# CONVERTER WARNING: 'final' parameters are not allowed in .NET:
+//		//ORIGINAL LINE: protected static void selectImpl(final String prompt, final String callbackMethod, final File defaultSelection, final Object callbackObject, final Frame parentFrame, final int mode)
+//		protected internal static void selectImpl(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame, int mode)
+//		{
+//			EventQueue.invokeLater(new RunnableAnonymousInnerClassHelper(prompt, callbackMethod, defaultSelection, callbackObject, parentFrame, mode));
+//		}
+//
+//		private partial class RunnableAnonymousInnerClassHelper : Runnable
+//		{
+//			private string prompt;
+//			private string callbackMethod;
+//			private File defaultSelection;
+//			private object callbackObject;
+//			private Frame parentFrame;
+//			private int mode;
+//
+//			public RunnableAnonymousInnerClassHelper(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame, int mode)
+//			{
+//				this.prompt = prompt;
+//				this.callbackMethod = callbackMethod;
+//				this.defaultSelection = defaultSelection;
+//				this.callbackObject = callbackObject;
+//				this.parentFrame = parentFrame;
+//				this.mode = mode;
+//			}
+//
+//			public virtual void run()
+//			{
+//				File selectedFile = null;
+//
+//				if (useNativeSelect)
+//				{
+//					FileDialog dialog = new FileDialog(parentFrame, prompt, mode);
+//					if (defaultSelection != null)
+//					{
+//						dialog.Directory = defaultSelection.Parent;
+//						dialog.File = defaultSelection.Name;
+//					}
+//					dialog.Visible = true;
+//					string directory = dialog.Directory;
+//					string filename = dialog.File;
+//					if (filename != null)
+//					{
+//						selectedFile = new File(directory, filename);
+//					}
+//
+//				}
+//				else
+//				{
+//					JFileChooser chooser = new JFileChooser();
+//					chooser.DialogTitle = prompt;
+//					if (defaultSelection != null)
+//					{
+//						chooser.SelectedFile = defaultSelection;
+//					}
+//
+//					int result = -1;
+//					if (mode == FileDialog.SAVE)
+//					{
+//						result = chooser.showSaveDialog(parentFrame);
+//					}
+//					else if (mode == FileDialog.LOAD)
+//					{
+//						result = chooser.showOpenDialog(parentFrame);
+//					}
+//					if (result == JFileChooser.APPROVE_OPTION)
+//					{
+//						selectedFile = chooser.SelectedFile;
+//					}
+//				}
+//				selectCallback(selectedFile, callbackMethod, callbackObject);
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// See selectInput() for details.
+//		///
+//		/// @webref input:files </summary>
+//		/// <param name="prompt"> message to the user </param>
+//		/// <param name="callback"> name of the method to be called when the selection is made </param>
+//		public virtual void selectFolder(string prompt, string callback)
+//		{
+//			selectFolder(prompt, callback, null);
+//		}
+//
+//
+//		public virtual void selectFolder(string prompt, string callback, File file)
+//		{
+//			selectFolder(prompt, callback, file, this);
+//		}
+//
+//
+//		public virtual void selectFolder(string prompt, string callback, File file, object callbackObject)
+//		{
+//			selectFolder(prompt, callback, file, callbackObject, selectFrame());
+//		}
+//
+//
+//		//JAVA TO C# CONVERTER WARNING: 'final' parameters are not allowed in .NET:
+//		//ORIGINAL LINE: public static void selectFolder(final String prompt, final String callbackMethod, final File defaultSelection, final Object callbackObject, final Frame parentFrame)
+//		public static void selectFolder(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame)
+//		{
+//			EventQueue.invokeLater(new RunnableAnonymousInnerClassHelper2(prompt, callbackMethod, defaultSelection, callbackObject, parentFrame));
+//		}
+//
+//		private class RunnableAnonymousInnerClassHelper2 : Runnable
+//		{
+//			private string prompt;
+//			private string callbackMethod;
+//			private File defaultSelection;
+//			private object callbackObject;
+//			private Frame parentFrame;
+//
+//			public RunnableAnonymousInnerClassHelper2(string prompt, string callbackMethod, File defaultSelection, object callbackObject, Frame parentFrame)
+//			{
+//				this.prompt = prompt;
+//				this.callbackMethod = callbackMethod;
+//				this.defaultSelection = defaultSelection;
+//				this.callbackObject = callbackObject;
+//				this.parentFrame = parentFrame;
+//			}
+//
+//			public virtual void run()
+//			{
+//				File selectedFile = null;
+//
+//				if (platform == PConstants_Fields.MACOSX && useNativeSelect != false)
+//				{
+//					FileDialog fileDialog = new FileDialog(parentFrame, prompt, FileDialog.LOAD);
+//					System.setProperty("apple.awt.fileDialogForDirectories", "true");
+//					fileDialog.Visible = true;
+//					System.setProperty("apple.awt.fileDialogForDirectories", "false");
+//					string filename = fileDialog.File;
+//					if (filename != null)
+//					{
+//						selectedFile = new File(fileDialog.Directory, fileDialog.File);
+//					}
+//				}
+//				else
+//				{
+//					JFileChooser fileChooser = new JFileChooser();
+//					fileChooser.DialogTitle = prompt;
+//					fileChooser.FileSelectionMode = JFileChooser.DIRECTORIES_ONLY;
+//					if (defaultSelection != null)
+//					{
+//						fileChooser.SelectedFile = defaultSelection;
+//					}
+//
+//					int result = fileChooser.showOpenDialog(parentFrame);
+//					if (result == JFileChooser.APPROVE_OPTION)
+//					{
+//						selectedFile = fileChooser.SelectedFile;
+//					}
+//				}
+//				selectCallback(selectedFile, callbackMethod, callbackObject);
+//			}
+//		}
+//
+//
+//		private static void selectCallback(File selectedFile, string callbackMethod, object callbackObject)
+//		{
+//			try
+//			{
+//				Type callbackClass = callbackObject.GetType();
+//				Method selectMethod = callbackClass.GetMethod(callbackMethod, new Type[] {typeof(File)});
+//				selectMethod.invoke(callbackObject, new object[] {selectedFile});
+//
+//			}
+//			catch (IllegalAccessException)
+//			{
+//				Console.Error.WriteLine(callbackMethod + "() must be public");
+//
+//			}
+//			catch (InvocationTargetException ite)
+//			{
+//				Console.WriteLine(ite.ToString());
+//				Console.Write(ite.StackTrace);
+//
+//			}
+//			catch (NoSuchMethodException)
+//			{
+//				Console.Error.WriteLine(callbackMethod + "() could not be found");
+//			}
+//		}
+//
+//
+//
+//		//////////////////////////////////////////////////////////////
+//
+//		// EXTENSIONS
+//
+//
+//		/// <summary>
+//		/// Get the compression-free extension for this filename. </summary>
+//		/// <param name="filename"> The filename to check </param>
+//		/// <returns> an extension, skipping past .gz if it's present </returns>
+//		public static string checkExtension(string filename)
+//		{
+//			// Don't consider the .gz as part of the name, createInput()
+//			// and createOuput() will take care of fixing that up.
+//			if (filename.ToLower().EndsWith(".gz"))
+//			{
+//				filename = filename.Substring(0, filename.Length - 3);
+//			}
+//			int dotIndex = filename.LastIndexOf('.');
+//			if (dotIndex != -1)
+//			{
+//				return filename.Substring(dotIndex + 1).ToLower();
+//			}
+//			return null;
+//		}
+//
+//
+//
 
-		/// <summary>
-		/// Return a full path to an item in the data folder.
-		/// <para>
-		/// This is only available with applications, not applets or Android.
-		/// On Windows and Linux, this is simply the data folder, which is located
-		/// in the same directory as the EXE file and lib folders. On Mac OS X, this
-		/// is a path to the data folder buried inside Contents/Java.
-		/// For the latter point, that also means that the data folder should not be
-		/// considered writable. Use sketchPath() for now, or inputPath() and
-		/// outputPath() once they're available in the 2.0 release.
-		/// </para>
-		/// <para>
-		/// dataPath() is not supported with applets because applets have their data
-		/// folder wrapped into the JAR file. To read data from the data folder that
-		/// works with an applet, you should use other methods such as createInput(),
-		/// createReader(), or loadStrings().
-		/// </para>
-		/// </summary>
-		public virtual string dataPath(string @where)
-		{
-			return dataFile(@where).AbsolutePath;
-		}
+		// TODO: implemnt Reader&Writer if necessary
+//
+//		//////////////////////////////////////////////////////////////
+//
+//		// READERS AND WRITERS
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from createReader.xml )
+//		///
+//		/// Creates a <b>BufferedReader</b> object that can be used to read files
+//		/// line-by-line as individual <b>String</b> objects. This is the complement
+//		/// to the <b>createWriter()</b> function.
+//		/// <br/> <br/>
+//		/// Starting with Processing release 0134, all files loaded and saved by the
+//		/// Processing API use UTF-8 encoding. In previous releases, the default
+//		/// encoding for your platform was used, which causes problems when files
+//		/// are moved to other platforms.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:files </summary>
+//		/// <param name="filename"> name of the file to be opened </param>
+//		/// <seealso cref= BufferedReader </seealso>
+//		/// <seealso cref= PApplet#createWriter(String) </seealso>
+//		/// <seealso cref= PrintWriter </seealso>
+//		public virtual BufferedReader createReader(string filename)
+//		{
+//			try
+//			{
+//				InputStream @is = createInput(filename);
+//				if (@is == null)
+//				{
+//					Console.Error.WriteLine(filename + " does not exist or could not be read");
+//					return null;
+//				}
+//				return createReader(@is);
+//
+//			}
+//			catch (Exception)
+//			{
+//				if (filename == null)
+//				{
+//					Console.Error.WriteLine("Filename passed to reader() was null");
+//				}
+//				else
+//				{
+//					Console.Error.WriteLine("Couldn't create a reader for " + filename);
+//				}
+//			}
+//			return null;
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static BufferedReader createReader(File file)
+//		{
+//			try
+//			{
+//				InputStream @is = new FileInputStream(file);
+//				if (file.Name.ToLower().EndsWith(".gz"))
+//				{
+//					@is = new GZIPInputStream(@is);
+//				}
+//				return createReader(@is);
+//
+//			}
+//			catch (Exception e)
+//			{
+//				if (file == null)
+//				{
+//					throw new Exception("File passed to createReader() was null");
+//				}
+//				else
+//				{
+//					Console.WriteLine(e.ToString());
+//					Console.Write(e.StackTrace);
+//					throw new Exception("Couldn't create a reader for " + file.AbsolutePath);
+//				}
+//			}
+//			//return null;
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// I want to read lines from a stream. If I have to type the
+//		/// following lines any more I'm gonna send Sun my medical bills.
+//		/// </summary>
+//		public static BufferedReader createReader(InputStream input)
+//		{
+//			InputStreamReader isr = null;
+//			try
+//			{
+//				isr = new InputStreamReader(input, "UTF-8");
+//			} // not gonna happen
+//			catch (UnsupportedEncodingException)
+//			{
+//			}
+//			return new BufferedReader(isr);
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from createWriter.xml )
+//		///
+//		/// Creates a new file in the sketch folder, and a <b>PrintWriter</b> object
+//		/// to write to it. For the file to be made correctly, it should be flushed
+//		/// and must be closed with its <b>flush()</b> and <b>close()</b> methods
+//		/// (see above example).
+//		/// <br/> <br/>
+//		/// Starting with Processing release 0134, all files loaded and saved by the
+//		/// Processing API use UTF-8 encoding. In previous releases, the default
+//		/// encoding for your platform was used, which causes problems when files
+//		/// are moved to other platforms.
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref output:files </summary>
+//		/// <param name="filename"> name of the file to be created </param>
+//		/// <seealso cref= PrintWriter </seealso>
+//		/// <seealso cref= PApplet#createReader </seealso>
+//		/// <seealso cref= BufferedReader </seealso>
+//		public virtual PrintWriter createWriter(string filename)
+//		{
+//			return createWriter(saveFile(filename));
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// I want to print lines to a file. I have RSI from typing these
+//		/// eight lines of code so many times.
+//		/// </summary>
+//		public static PrintWriter createWriter(File file)
+//		{
+//			try
+//			{
+//				createPath(file); // make sure in-between folders exist
+//				OutputStream output = new FileOutputStream(file);
+//				if (file.Name.ToLower().EndsWith(".gz"))
+//				{
+//					output = new GZIPOutputStream(output);
+//				}
+//				return createWriter(output);
+//
+//			}
+//			catch (Exception e)
+//			{
+//				if (file == null)
+//				{
+//					throw new Exception("File passed to createWriter() was null");
+//				}
+//				else
+//				{
+//					Console.WriteLine(e.ToString());
+//					Console.Write(e.StackTrace);
+//					throw new Exception("Couldn't create a writer for " + file.AbsolutePath);
+//				}
+//			}
+//			//return null;
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// I want to print lines to a file. Why am I always explaining myself?
+//		/// It's the JavaSoft API engineers who need to explain themselves.
+//		/// </summary>
+//		public static PrintWriter createWriter(OutputStream output)
+//		{
+//			try
+//			{
+//				BufferedOutputStream bos = new BufferedOutputStream(output, 8192);
+//				OutputStreamWriter osw = new OutputStreamWriter(bos, "UTF-8");
+//				return new PrintWriter(osw);
+//			} // not gonna happen
+//			catch (UnsupportedEncodingException)
+//			{
+//			}
+//			return null;
+//		}
+//
+//
+//		//////////////////////////////////////////////////////////////
+//
+//		// FILE INPUT
+//
+//
+//		/// @deprecated As of release 0136, use createInput() instead.
+//		public virtual InputStream openStream(string filename)
+//		{
+//			return createInput(filename);
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from createInput.xml )
+//		///
+//		/// This is a function for advanced programmers to open a Java InputStream.
+//		/// It's useful if you want to use the facilities provided by PApplet to
+//		/// easily open files from the data folder or from a URL, but want an
+//		/// InputStream object so that you can use other parts of Java to take more
+//		/// control of how the stream is read.<br />
+//		/// <br />
+//		/// The filename passed in can be:<br />
+//		/// - A URL, for instance <b>openStream("http://processing.org/")</b><br />
+//		/// - A file in the sketch's <b>data</b> folder<br />
+//		/// - The full path to a file to be opened locally (when running as an
+//		/// application)<br />
+//		/// <br />
+//		/// If the requested item doesn't exist, null is returned. If not online,
+//		/// this will also check to see if the user is asking for a file whose name
+//		/// isn't properly capitalized. If capitalization is different, an error
+//		/// will be printed to the console. This helps prevent issues that appear
+//		/// when a sketch is exported to the web, where case sensitivity matters, as
+//		/// opposed to running from inside the Processing Development Environment on
+//		/// Windows or Mac OS, where case sensitivity is preserved but ignored.<br />
+//		/// <br />
+//		/// If the file ends with <b>.gz</b>, the stream will automatically be gzip
+//		/// decompressed. If you don't want the automatic decompression, use the
+//		/// related function <b>createInputRaw()</b>.
+//		/// <br />
+//		/// In earlier releases, this function was called <b>openStream()</b>.<br />
+//		/// <br />
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// <h3>Advanced</h3>
+//		/// Simplified method to open a Java InputStream.
+//		/// <para>
+//		/// This method is useful if you want to use the facilities provided
+//		/// by PApplet to easily open things from the data folder or from a URL,
+//		/// but want an InputStream object so that you can use other Java
+//		/// methods to take more control of how the stream is read.
+//		/// </para>
+//		/// <para>
+//		/// If the requested item doesn't exist, null is returned.
+//		/// (Prior to 0096, die() would be called, killing the applet)
+//		/// </para>
+//		/// <para>
+//		/// For 0096+, the "data" folder is exported intact with subfolders,
+//		/// and openStream() properly handles subdirectories from the data folder
+//		/// </para>
+//		/// <para>
+//		/// If not online, this will also check to see if the user is asking
+//		/// for a file whose name isn't properly capitalized. This helps prevent
+//		/// issues when a sketch is exported to the web, where case sensitivity
+//		/// matters, as opposed to Windows and the Mac OS default where
+//		/// case sensitivity is preserved but ignored.
+//		/// </para>
+//		/// <para>
+//		/// It is strongly recommended that libraries use this method to open
+//		/// data files, so that the loading sequence is handled in the same way
+//		/// as functions like loadBytes(), loadImage(), etc.
+//		/// </para>
+//		/// <para>
+//		/// The filename passed in can be:
+//		/// <UL>
+//		/// <LI>A URL, for instance openStream("http://processing.org/");
+//		/// <LI>A file in the sketch's data folder
+//		/// <LI>Another file to be opened locally (when running as an application)
+//		/// </UL>
+//		///
+//		/// @webref input:files
+//		/// </para>
+//		/// </summary>
+//		/// <param name="filename"> the name of the file to use as input </param>
+//		/// <seealso cref= PApplet#createOutput(String) </seealso>
+//		/// <seealso cref= PApplet#selectOutput(String) </seealso>
+//		/// <seealso cref= PApplet#selectInput(String)
+//		///  </seealso>
+//		public virtual InputStream createInput(string filename)
+//		{
+//			InputStream input = createInputRaw(filename);
+//			if ((input != null) && filename.ToLower().EndsWith(".gz"))
+//			{
+//				try
+//				{
+//					return new GZIPInputStream(input);
+//				}
+//				catch (IOException e)
+//				{
+//					Console.WriteLine(e.ToString());
+//					Console.Write(e.StackTrace);
+//					return null;
+//				}
+//			}
+//			return input;
+//		}
+//
+//
+//		/// <summary>
+//		/// Call openStream() without automatic gzip decompression.
+//		/// </summary>
+//		public virtual InputStream createInputRaw(string filename)
+//		{
+//			InputStream stream = null;
+//
+//			if (filename == null)
+//			{
+//				return null;
+//			}
+//
+//			if (filename.Length == 0)
+//			{
+//				// an error will be called by the parent function
+//				//System.err.println("The filename passed to openStream() was empty.");
+//				return null;
+//			}
+//
+//			// safe to check for this as a url first. this will prevent online
+//			// access logs from being spammed with GET /sketchfolder/http://blahblah
+//			if (filename.Contains(":")) // at least smells like URL
+//			{
+//				try
+//				{
+//					URL url = new URL(filename);
+//					stream = url.openStream();
+//					return stream;
+//
+//				}
+//				catch (MalformedURLException)
+//				{
+//					// not a url, that's fine
+//
+//				}
+//				catch (FileNotFoundException)
+//				{
+//					// Java 1.5 likes to throw this when URL not available. (fix for 0119)
+//					// http://dev.processing.org/bugs/show_bug.cgi?id=403
+//
+//				}
+//				catch (IOException e)
+//				{
+//					// changed for 0117, shouldn't be throwing exception
+//					Console.WriteLine(e.ToString());
+//					Console.Write(e.StackTrace);
+//					//System.err.println("Error downloading from URL " + filename);
+//					return null;
+//					//throw new RuntimeException("Error downloading from URL " + filename);
+//				}
+//			}
+//
+//			// Moved this earlier than the getResourceAsStream() checks, because
+//			// calling getResourceAsStream() on a directory lists its contents.
+//			// http://dev.processing.org/bugs/show_bug.cgi?id=716
+//			try
+//			{
+//				// First see if it's in a data folder. This may fail by throwing
+//				// a SecurityException. If so, this whole block will be skipped.
+//				File file = new File(dataPath(filename));
+//				if (!file.exists())
+//				{
+//					// next see if it's just in the sketch folder
+//					file = sketchFile(filename);
+//				}
+//
+//				if (file.Directory)
+//				{
+//					return null;
+//				}
+//				if (file.exists())
+//				{
+//					try
+//					{
+//						// handle case sensitivity check
+//						string filePath = file.CanonicalPath;
+//						string filenameActual = (new System.IO.FileInfo(filePath)).Name;
+//						// make sure there isn't a subfolder prepended to the name
+//						string filenameShort = (new System.IO.FileInfo(filename)).Name;
+//						// if the actual filename is the same, but capitalized
+//						// differently, warn the user.
+//						//if (filenameActual.equalsIgnoreCase(filenameShort) &&
+//						//!filenameActual.equals(filenameShort)) {
+//						if (!filenameActual.Equals(filenameShort))
+//						{
+//							throw new Exception("This file is named " + filenameActual + " not " + filename + ". Rename the file " + "or change your code.");
+//						}
+//					}
+//					catch (IOException)
+//					{
+//					}
+//				}
+//
+//				// if this file is ok, may as well just load it
+//				stream = new FileInputStream(file);
+//				if (stream != null)
+//				{
+//					return stream;
+//				}
+//
+//				// have to break these out because a general Exception might
+//				// catch the RuntimeException being thrown above
+//			}
+//			catch (IOException)
+//			{
+//			}
+//			catch (SecurityException)
+//			{
+//			}
+//
+//			// Using getClassLoader() prevents java from converting dots
+//			// to slashes or requiring a slash at the beginning.
+//			// (a slash as a prefix means that it'll load from the root of
+//			// the jar, rather than trying to dig into the package location)
+//			ClassLoader cl = this.GetType().ClassLoader;
+//
+//			// by default, data files are exported to the root path of the jar.
+//			// (not the data folder) so check there first.
+//			stream = cl.getResourceAsStream("data/" + filename);
+//			if (stream != null)
+//			{
+//				//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+//				string cn = stream.GetType().FullName;
+//				// this is an irritation of sun's java plug-in, which will return
+//				// a non-null stream for an object that doesn't exist. like all good
+//				// things, this is probably introduced in java 1.5. awesome!
+//				// http://dev.processing.org/bugs/show_bug.cgi?id=359
+//				if (!cn.Equals("sun.plugin.cache.EmptyInputStream"))
+//				{
+//					return stream;
+//				}
+//			}
+//
+//			// When used with an online script, also need to check without the
+//			// data folder, in case it's not in a subfolder called 'data'.
+//			// http://dev.processing.org/bugs/show_bug.cgi?id=389
+//			stream = cl.getResourceAsStream(filename);
+//			if (stream != null)
+//			{
+//				//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+//				string cn = stream.GetType().FullName;
+//				if (!cn.Equals("sun.plugin.cache.EmptyInputStream"))
+//				{
+//					return stream;
+//				}
+//			}
+//
+//			// Finally, something special for the Internet Explorer users. Turns out
+//			// that we can't get files that are part of the same folder using the
+//			// methods above when using IE, so we have to resort to the old skool
+//			// getDocumentBase() from teh applet dayz. 1996, my brotha.
+//			try
+//			{
+//				URL @base = DocumentBase;
+//				if (@base != null)
+//				{
+//					URL url = new URL(@base, filename);
+//					URLConnection conn = url.openConnection();
+//					return conn.InputStream;
+//					//      if (conn instanceof HttpURLConnection) {
+//					//      HttpURLConnection httpConnection = (HttpURLConnection) conn;
+//					//      // test for 401 result (HTTP only)
+//					//      int responseCode = httpConnection.getResponseCode();
+//					//    }
+//				}
+//			} // IO or NPE or...
+//			catch (Exception)
+//			{
+//			}
+//
+//			// Now try it with a 'data' subfolder. getting kinda desperate for data...
+//			try
+//			{
+//				URL @base = DocumentBase;
+//				if (@base != null)
+//				{
+//					URL url = new URL(@base, "data/" + filename);
+//					URLConnection conn = url.openConnection();
+//					return conn.InputStream;
+//				}
+//			}
+//			catch (Exception)
+//			{
+//			}
+//
+//			try
+//			{
+//				// attempt to load from a local file, used when running as
+//				// an application, or as a signed applet
+//				try // first try to catch any security exceptions
+//				{
+//					try
+//					{
+//						stream = new FileInputStream(dataPath(filename));
+//						if (stream != null)
+//						{
+//							return stream;
+//						}
+//					}
+//					catch (IOException)
+//					{
+//					}
+//
+//					try
+//					{
+//						stream = new FileInputStream(sketchPath(filename));
+//						if (stream != null)
+//						{
+//							return stream;
+//						}
+//					} // ignored
+//					catch (Exception)
+//					{
+//					}
+//
+//					try
+//					{
+//						stream = new FileInputStream(filename);
+//						if (stream != null)
+//						{
+//							return stream;
+//						}
+//					}
+//					catch (IOException)
+//					{
+//					}
+//
+//				} // online, whups
+//				catch (SecurityException)
+//				{
+//				}
+//
+//			}
+//			catch (Exception e)
+//			{
+//				//die(e.getMessage(), e);
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//			}
+//
+//			return null;
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static InputStream createInput(File file)
+//		{
+//			if (file == null)
+//			{
+//				throw new System.ArgumentException("File passed to createInput() was null");
+//			}
+//			try
+//			{
+//				InputStream input = new FileInputStream(file);
+//				if (file.Name.ToLower().EndsWith(".gz"))
+//				{
+//					return new GZIPInputStream(input);
+//				}
+//				return input;
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.Error.WriteLine("Could not createInput() for " + file);
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return null;
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from loadBytes.xml )
+//		///
+//		/// Reads the contents of a file or url and places it in a byte array. If a
+//		/// file is specified, it must be located in the sketch's "data"
+//		/// directory/folder.<br />
+//		/// <br />
+//		/// The filename parameter can also be a URL to a file found online. For
+//		/// security reasons, a Processing sketch found online can only download
+//		/// files from the same server from which it came. Getting around this
+//		/// restriction requires a <a
+//		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</a>.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref input:files </summary>
+//		/// <param name="filename"> name of a file in the data folder or a URL. </param>
+//		/// <seealso cref= PApplet#loadStrings(String) </seealso>
+//		/// <seealso cref= PApplet#saveStrings(String, String[]) </seealso>
+//		/// <seealso cref= PApplet#saveBytes(String, byte[])
+//		///  </seealso>
+//		public virtual sbyte[] loadBytes(string filename)
+//		{
+//			InputStream @is = createInput(filename);
+//			if (@is != null)
+//			{
+//				sbyte[] outgoing = loadBytes(@is);
+//				try
+//				{
+//					@is.close();
+//				}
+//				catch (IOException e)
+//				{
+//					Console.WriteLine(e.ToString());
+//					Console.Write(e.StackTrace); // shouldn't happen
+//				}
+//				return outgoing;
+//			}
+//
+//			Console.Error.WriteLine("The file \"" + filename + "\" " + "is missing or inaccessible, make sure " + "the URL is valid or that the file has been " + "added to your sketch and is readable.");
+//			return null;
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static sbyte[] loadBytes(InputStream input)
+//		{
+//			try
+//			{
+//				BufferedInputStream bis = new BufferedInputStream(input);
+//				ByteArrayOutputStream @out = new ByteArrayOutputStream();
+//
+//				int c = bis.read();
+//				while (c != -1)
+//				{
+//					@out.write(c);
+//					c = bis.read();
+//				}
+//				return @out.toByteArray();
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				//throw new RuntimeException("Couldn't load bytes from stream");
+//			}
+//			return null;
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static sbyte[] loadBytes(File file)
+//		{
+//			InputStream @is = createInput(file);
+//			return loadBytes(@is);
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static string[] loadStrings(File file)
+//		{
+//			InputStream @is = createInput(file);
+//			if (@is != null)
+//			{
+//				string[] outgoing = loadStrings(@is);
+//				try
+//				{
+//					@is.close();
+//				}
+//				catch (IOException e)
+//				{
+//					Console.WriteLine(e.ToString());
+//					Console.Write(e.StackTrace);
+//				}
+//				return outgoing;
+//			}
+//			return null;
+//		}
+//
+//		/// <summary>
+//		/// ( begin auto-generated from loadStrings.xml )
+//		///
+//		/// Reads the contents of a file or url and creates a String array of its
+//		/// individual lines. If a file is specified, it must be located in the
+//		/// sketch's "data" directory/folder.<br />
+//		/// <br />
+//		/// The filename parameter can also be a URL to a file found online. For
+//		/// security reasons, a Processing sketch found online can only download
+//		/// files from the same server from which it came. Getting around this
+//		/// restriction requires a <a
+//		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</a>.
+//		/// <br />
+//		/// If the file is not available or an error occurs, <b>null</b> will be
+//		/// returned and an error message will be printed to the console. The error
+//		/// message does not halt the program, however the null value may cause a
+//		/// NullPointerException if your code does not check whether the value
+//		/// returned is null.
+//		/// <br/> <br/>
+//		/// Starting with Processing release 0134, all files loaded and saved by the
+//		/// Processing API use UTF-8 encoding. In previous releases, the default
+//		/// encoding for your platform was used, which causes problems when files
+//		/// are moved to other platforms.
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// <h3>Advanced</h3>
+//		/// Load data from a file and shove it into a String array.
+//		/// <para>
+//		/// Exceptions are handled internally, when an error, occurs, an
+//		/// exception is printed to the console and 'null' is returned,
+//		/// but the program continues running. This is a tradeoff between
+//		/// 1) showing the user that there was a problem but 2) not requiring
+//		/// that all i/o code is contained in try/catch blocks, for the sake
+//		/// of new users (or people who are just trying to get things done
+//		/// in a "scripting" fashion. If you want to handle exceptions,
+//		/// use Java methods for I/O.
+//		///
+//		/// @webref input:files
+//		/// </para>
+//		/// </summary>
+//		/// <param name="filename"> name of the file or url to load </param>
+//		/// <seealso cref= PApplet#loadBytes(String) </seealso>
+//		/// <seealso cref= PApplet#saveStrings(String, String[]) </seealso>
+//		/// <seealso cref= PApplet#saveBytes(String, byte[]) </seealso>
+//		public virtual string[] loadStrings(string filename)
+//		{
+//			InputStream @is = createInput(filename);
+//			if (@is != null)
+//			{
+//				return loadStrings(@is);
+//			}
+//
+//			Console.Error.WriteLine("The file \"" + filename + "\" " + "is missing or inaccessible, make sure " + "the URL is valid or that the file has been " + "added to your sketch and is readable.");
+//			return null;
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static string[] loadStrings(InputStream input)
+//		{
+//			try
+//			{
+//				BufferedReader reader = new BufferedReader(new InputStreamReader(input, "UTF-8"));
+//				return loadStrings(reader);
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//			}
+//			return null;
+//		}
+//
+//
+//		public static string[] loadStrings(BufferedReader reader)
+//		{
+//			try
+//			{
+//				string[] lines = new string[100];
+//				int lineCount = 0;
+//				string line = null;
+//				while ((line = reader.readLine()) != null)
+//				{
+//					if (lineCount == lines.Length)
+//					{
+//						string[] temp = new string[lineCount << 1];
+//						Array.Copy(lines, 0, temp, 0, lineCount);
+//						lines = temp;
+//					}
+//					lines[lineCount++] = line;
+//				}
+//				reader.close();
+//
+//				if (lineCount == lines.Length)
+//				{
+//					return lines;
+//				}
+//
+//				// resize array to appropriate amount for these lines
+//				string[] output = new string[lineCount];
+//				Array.Copy(lines, 0, output, 0, lineCount);
+//				return output;
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				//throw new RuntimeException("Error inside loadStrings()");
+//			}
+//			return null;
+//		}
+//
+//
+//
+//		//////////////////////////////////////////////////////////////
+//
+//		// FILE OUTPUT
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from createOutput.xml )
+//		///
+//		/// Similar to <b>createInput()</b>, this creates a Java <b>OutputStream</b>
+//		/// for a given filename or path. The file will be created in the sketch
+//		/// folder, or in the same folder as an exported application.
+//		/// <br /><br />
+//		/// If the path does not exist, intermediate folders will be created. If an
+//		/// exception occurs, it will be printed to the console, and <b>null</b>
+//		/// will be returned.
+//		/// <br /><br />
+//		/// This function is a convenience over the Java approach that requires you
+//		/// to 1) create a FileOutputStream object, 2) determine the exact file
+//		/// location, and 3) handle exceptions. Exceptions are handled internally by
+//		/// the function, which is more appropriate for "sketch" projects.
+//		/// <br /><br />
+//		/// If the output filename ends with <b>.gz</b>, the output will be
+//		/// automatically GZIP compressed as it is written.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref output:files </summary>
+//		/// <param name="filename"> name of the file to open </param>
+//		/// <seealso cref= PApplet#createInput(String) </seealso>
+//		/// <seealso cref= PApplet#selectOutput() </seealso>
+//		public virtual OutputStream createOutput(string filename)
+//		{
+//			return createOutput(saveFile(filename));
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static OutputStream createOutput(File file)
+//		{
+//			try
+//			{
+//				createPath(file); // make sure the path exists
+//				FileOutputStream fos = new FileOutputStream(file);
+//				if (file.Name.ToLower().EndsWith(".gz"))
+//				{
+//					return new GZIPOutputStream(fos);
+//				}
+//				return fos;
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//			}
+//			return null;
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from saveStream.xml )
+//		///
+//		/// Save the contents of a stream to a file in the sketch folder. This is
+//		/// basically <b>saveBytes(blah, loadBytes())</b>, but done more efficiently
+//		/// (and with less confusing syntax).<br />
+//		/// <br />
+//		/// When using the <b>targetFile</b> parameter, it writes to a <b>File</b>
+//		/// object for greater control over the file location. (Note that unlike
+//		/// some other functions, this will not automatically compress or uncompress
+//		/// gzip files.)
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref output:files </summary>
+//		/// <param name="target"> name of the file to write to </param>
+//		/// <param name="source"> location to read from (a filename, path, or URL) </param>
+//		/// <seealso cref= PApplet#createOutput(String) </seealso>
+//		public virtual bool saveStream(string target, string source)
+//		{
+//			return saveStream(saveFile(target), source);
+//		}
+//
+//		/// <summary>
+//		/// Identical to the other saveStream(), but writes to a File
+//		/// object, for greater control over the file location.
+//		/// <p/>
+//		/// Note that unlike other api methods, this will not automatically
+//		/// compress or uncompress gzip files.
+//		/// </summary>
+//		public virtual bool saveStream(File target, string source)
+//		{
+//			return saveStream(target, createInputRaw(source));
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public virtual bool saveStream(string target, InputStream source)
+//		{
+//			return saveStream(saveFile(target), source);
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static bool saveStream(File target, InputStream source)
+//		{
+//			File tempFile = null;
+//			try
+//			{
+//				File parentDir = target.ParentFile;
+//				// make sure that this path actually exists before writing
+//				createPath(target);
+//				tempFile = File.createTempFile(target.Name, null, parentDir);
+//				FileOutputStream targetStream = new FileOutputStream(tempFile);
+//
+//				saveStream(targetStream, source);
+//				targetStream.close();
+//				targetStream = null;
+//
+//				if (target.exists())
+//				{
+//					if (!target.delete())
+//					{
+//						Console.Error.WriteLine("Could not replace " + target.AbsolutePath + ".");
+//					}
+//				}
+//				if (!tempFile.renameTo(target))
+//				{
+//					Console.Error.WriteLine("Could not rename temporary file " + tempFile.AbsolutePath);
+//					return false;
+//				}
+//				return true;
+//
+//			}
+//			catch (IOException e)
+//			{
+//				if (tempFile != null)
+//				{
+//					tempFile.delete();
+//				}
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//				return false;
+//			}
+//		}
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in .NET:
+//		//ORIGINAL LINE: public static void saveStream(OutputStream target, InputStream source) throws IOException
+//		public static void saveStream(OutputStream target, InputStream source)
+//		{
+//			BufferedInputStream bis = new BufferedInputStream(source, 16384);
+//			BufferedOutputStream bos = new BufferedOutputStream(target);
+//
+//			sbyte[] buffer = new sbyte[8192];
+//			int bytesRead;
+//			while ((bytesRead = bis.read(buffer)) != -1)
+//			{
+//				bos.write(buffer, 0, bytesRead);
+//			}
+//
+//			bos.flush();
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from saveBytes.xml )
+//		///
+//		/// Opposite of <b>loadBytes()</b>, will write an entire array of bytes to a
+//		/// file. The data is saved in binary format. This file is saved to the
+//		/// sketch's folder, which is opened by selecting "Show sketch folder" from
+//		/// the "Sketch" menu.<br />
+//		/// <br />
+//		/// It is not possible to use saveXxxxx() functions inside a web browser
+//		/// unless the sketch is <a
+//		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
+//		/// save a file back to a server, see the <a
+//		/// href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
+//		/// web</A> code snippet on the Processing Wiki.
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref output:files </summary>
+//		/// <param name="filename"> name of the file to write to </param>
+//		/// <param name="data"> array of bytes to be written </param>
+//		/// <seealso cref= PApplet#loadStrings(String) </seealso>
+//		/// <seealso cref= PApplet#loadBytes(String) </seealso>
+//		/// <seealso cref= PApplet#saveStrings(String, String[]) </seealso>
+//		public virtual void saveBytes(string filename, sbyte[] data)
+//		{
+//			saveBytes(saveFile(filename), data);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// Saves bytes to a specific File location specified by the user.
+//		/// </summary>
+//		public static void saveBytes(File file, sbyte[] data)
+//		{
+//			File tempFile = null;
+//			try
+//			{
+//				File parentDir = file.ParentFile;
+//				tempFile = File.createTempFile(file.Name, null, parentDir);
+//
+//				OutputStream output = createOutput(tempFile);
+//				saveBytes(output, data);
+//				output.close();
+//				output = null;
+//
+//				if (file.exists())
+//				{
+//					if (!file.delete())
+//					{
+//						Console.Error.WriteLine("Could not replace " + file.AbsolutePath);
+//					}
+//				}
+//
+//				if (!tempFile.renameTo(file))
+//				{
+//					Console.Error.WriteLine("Could not rename temporary file " + tempFile.AbsolutePath);
+//				}
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.Error.WriteLine("error saving bytes to " + file);
+//				if (tempFile != null)
+//				{
+//					tempFile.delete();
+//				}
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//			}
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// Spews a buffer of bytes to an OutputStream.
+//		/// </summary>
+//		public static void saveBytes(OutputStream output, sbyte[] data)
+//		{
+//			try
+//			{
+//				output.write(data);
+//				output.flush();
+//
+//			}
+//			catch (IOException e)
+//			{
+//				Console.WriteLine(e.ToString());
+//				Console.Write(e.StackTrace);
+//			}
+//		}
+//
+//
+//		//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from saveStrings.xml )
+//		///
+//		/// Writes an array of strings to a file, one line per string. This file is
+//		/// saved to the sketch's folder, which is opened by selecting "Show sketch
+//		/// folder" from the "Sketch" menu.<br />
+//		/// <br />
+//		/// It is not possible to use saveXxxxx() functions inside a web browser
+//		/// unless the sketch is <a
+//		/// href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
+//		/// save a file back to a server, see the <a
+//		/// href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
+//		/// web</A> code snippet on the Processing Wiki.<br/>
+//		/// <br/ >
+//		/// Starting with Processing 1.0, all files loaded and saved by the
+//		/// Processing API use UTF-8 encoding. In previous releases, the default
+//		/// encoding for your platform was used, which causes problems when files
+//		/// are moved to other platforms.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref output:files </summary>
+//		/// <param name="filename"> filename for output </param>
+//		/// <param name="data"> string array to be written </param>
+//		/// <seealso cref= PApplet#loadStrings(String) </seealso>
+//		/// <seealso cref= PApplet#loadBytes(String) </seealso>
+//		/// <seealso cref= PApplet#saveBytes(String, byte[]) </seealso>
+//		public virtual void saveStrings(string filename, string[] data)
+//		{
+//			saveStrings(saveFile(filename), data);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static void saveStrings(File file, string[] data)
+//		{
+//			saveStrings(createOutput(file), data);
+//		}
+//
+//
+//		/// <summary>
+//		/// @nowebref
+//		/// </summary>
+//		public static void saveStrings(OutputStream output, string[] data)
+//		{
+//			PrintWriter writer = createWriter(output);
+//			for (int i = 0; i < data.Length; i++)
+//			{
+//				writer.println(data[i]);
+//			}
+//			writer.flush();
+//			writer.close();
+//		}
 
-
-		/// <summary>
-		/// Return a full path to an item in the data folder as a File object.
-		/// See the dataPath() method for more information.
-		/// </summary>
-		public virtual File dataFile(string @where)
-		{
-			// isAbsolute() could throw an access exception, but so will writing
-			// to the local disk using the sketch path, so this is safe here.
-			File why = new File(@where);
-			if (why.Absolute)
-			{
-				return why;
-			}
-
-			string jarPath = this.GetType().ProtectionDomain.CodeSource.Location.Path;
-			if (jarPath.Contains("Contents/Java/"))
-			{
-				// The path will be URL encoded (%20 for spaces) coming from above
-				// http://code.google.com/p/processing/issues/detail?id=1073
-				File containingFolder = (new File(urlDecode(jarPath))).ParentFile;
-				File dataFolder = new File(containingFolder, "data");
-				Console.WriteLine(dataFolder);
-				return new File(dataFolder, @where);
-			}
-			// Windows, Linux, or when not using a Mac OS X .app file
-			return new File(sketchPath_Renamed + File.separator + "data" + File.separator + @where);
-		}
-
-
-		/// <summary>
-		/// On Windows and Linux, this is simply the data folder. On Mac OS X, this is
-		/// the path to the data folder buried inside Contents/Java
-		/// </summary>
-		//  public File inputFile(String where) {
-		//  }
-
-
-		//  public String inputPath(String where) {
-		//  }
-
-
-		/// <summary>
-		/// Takes a path and creates any in-between folders if they don't
-		/// already exist. Useful when trying to save to a subfolder that
-		/// may not actually exist.
-		/// </summary>
-		public static void createPath(string path)
-		{
-			createPath(new File(path));
-		}
-
-
-		public static void createPath(File file)
-		{
-			try
-			{
-				string parent = file.Parent;
-				if (parent != null)
-				{
-					File unit = new File(parent);
-					if (!unit.exists())
-					{
-						unit.mkdirs();
-					}
-				}
-			}
-			catch (SecurityException)
-			{
-				Console.Error.WriteLine("You don't have permissions to create " + file.AbsolutePath);
-			}
-		}
-
-
-		public static string getExtension(string filename)
-		{
-			string extension;
-
-			string lower = filename.ToLower();
-			int dot = filename.LastIndexOf('.');
-			if (dot == -1)
-			{
-				extension = "unknown"; // no extension found
-			}
-			extension = lower.Substring(dot + 1);
-
-			// check for, and strip any parameters on the url, i.e.
-			// filename.jpg?blah=blah&something=that
-			int question = extension.IndexOf('?');
-			if (question != -1)
-			{
-				extension = extension.Substring(0, question);
-			}
-
-			return extension;
-		}
-
+		// TODO: implement Path
+//
+//		//////////////////////////////////////////////////////////////
+//
+//
+//		/// <summary>
+//		/// Prepend the sketch folder path to the filename (or path) that is
+//		/// passed in. External libraries should use this function to save to
+//		/// the sketch folder.
+//		/// <p/>
+//		/// Note that when running as an applet inside a web browser,
+//		/// the sketchPath will be set to null, because security restrictions
+//		/// prevent applets from accessing that information.
+//		/// <p/>
+//		/// This will also cause an error if the sketch is not inited properly,
+//		/// meaning that init() was never called on the PApplet when hosted
+//		/// my some other main() or by other code. For proper use of init(),
+//		/// see the examples in the main description text for PApplet.
+//		/// </summary>
+//		public virtual string sketchPath(string @where)
+//		{
+//			if (sketchPath_Renamed == null)
+//			{
+//				return @where;
+//				//      throw new RuntimeException("The applet was not inited properly, " +
+//				//                                 "or security restrictions prevented " +
+//				//                                 "it from determining its path.");
+//			}
+//			// isAbsolute() could throw an access exception, but so will writing
+//			// to the local disk using the sketch path, so this is safe here.
+//			// for 0120, added a try/catch anyways.
+//			try
+//			{
+//				if ((new File(@where)).Absolute)
+//				{
+//					return @where;
+//				}
+//			}
+//			catch (Exception)
+//			{
+//			}
+//
+//			return sketchPath_Renamed + File.separator + @where;
+//		}
+//
+//
+//		public virtual File sketchFile(string @where)
+//		{
+//			return new File(sketchPath(@where));
+//		}
+//
+//
+//		/// <summary>
+//		/// Returns a path inside the applet folder to save to. Like sketchPath(),
+//		/// but creates any in-between folders so that things save properly.
+//		/// <p/>
+//		/// All saveXxxx() functions use the path to the sketch folder, rather than
+//		/// its data folder. Once exported, the data folder will be found inside the
+//		/// jar file of the exported application or applet. In this case, it's not
+//		/// possible to save data into the jar file, because it will often be running
+//		/// from a server, or marked in-use if running from a local file system.
+//		/// With this in mind, saving to the data path doesn't make sense anyway.
+//		/// If you know you're running locally, and want to save to the data folder,
+//		/// use <TT>saveXxxx("data/blah.dat")</TT>.
+//		/// </summary>
+//		public virtual string savePath(string @where)
+//		{
+//			if (@where == null)
+//			{
+//				return null;
+//			}
+//			string filename = sketchPath(@where);
+//			createPath(filename);
+//			return filename;
+//		}
+//
+//
+//		// TODO: implement File if necessary
+//
+//		/// <summary>
+//		/// Identical to savePath(), but returns a File object.
+//		/// </summary>
+////		public virtual File saveFile(string @where)
+////		{
+////			return new File(savePath(@where));
+////		}
+//
+////		internal static File desktopFolder;
+//
+//		/// <summary>
+//		/// Not a supported function. For testing use only. </summary>
+////		public static File desktopFile(string what)
+////		{
+////			if (desktopFolder == null)
+////			{
+////				// Should work on Linux and OS X (on OS X, even with the localized version).
+////				desktopFolder = new File(System.getProperty("user.home"), "Desktop");
+////				if (!desktopFolder.exists())
+////				{
+////					if (platform == PConstants_Fields.WINDOWS)
+////					{
+////						FileSystemView filesys = FileSystemView.FileSystemView;
+////						desktopFolder = filesys.HomeDirectory;
+////					}
+////					else
+////					{
+////						throw new System.NotSupportedException("Could not find a suitable desktop foldder");
+////					}
+////				}
+////			}
+////			return new File(desktopFolder, what);
+////		}
+//
+//
+//		/// <summary>
+//		/// Not a supported function. For testing use only. </summary>
+//		public static string desktopPath(string what)
+//		{
+//			return desktopFile(what).AbsolutePath;
+//		}
+//
+//
+//		/// <summary>
+//		/// Return a full path to an item in the data folder.
+//		/// <para>
+//		/// This is only available with applications, not applets or Android.
+//		/// On Windows and Linux, this is simply the data folder, which is located
+//		/// in the same directory as the EXE file and lib folders. On Mac OS X, this
+//		/// is a path to the data folder buried inside Contents/Java.
+//		/// For the latter point, that also means that the data folder should not be
+//		/// considered writable. Use sketchPath() for now, or inputPath() and
+//		/// outputPath() once they're available in the 2.0 release.
+//		/// </para>
+//		/// <para>
+//		/// dataPath() is not supported with applets because applets have their data
+//		/// folder wrapped into the JAR file. To read data from the data folder that
+//		/// works with an applet, you should use other methods such as createInput(),
+//		/// createReader(), or loadStrings().
+//		/// </para>
+//		/// </summary>
+//		public virtual string dataPath(string @where)
+//		{
+//			return dataFile(@where).AbsolutePath;
+//		}
+//
+//
+//		/// <summary>
+//		/// Return a full path to an item in the data folder as a File object.
+//		/// See the dataPath() method for more information.
+//		/// </summary>
+//		public virtual File dataFile(string @where)
+//		{
+//			// isAbsolute() could throw an access exception, but so will writing
+//			// to the local disk using the sketch path, so this is safe here.
+//			File why = new File(@where);
+//			if (why.Absolute)
+//			{
+//				return why;
+//			}
+//
+//			string jarPath = this.GetType().ProtectionDomain.CodeSource.Location.Path;
+//			if (jarPath.Contains("Contents/Java/"))
+//			{
+//				// The path will be URL encoded (%20 for spaces) coming from above
+//				// http://code.google.com/p/processing/issues/detail?id=1073
+//				File containingFolder = (new File(urlDecode(jarPath))).ParentFile;
+//				File dataFolder = new File(containingFolder, "data");
+//				Console.WriteLine(dataFolder);
+//				return new File(dataFolder, @where);
+//			}
+//			// Windows, Linux, or when not using a Mac OS X .app file
+//			return new File(sketchPath_Renamed + File.separator + "data" + File.separator + @where);
+//		}
+//
+//
+//		/// <summary>
+//		/// On Windows and Linux, this is simply the data folder. On Mac OS X, this is
+//		/// the path to the data folder buried inside Contents/Java
+//		/// </summary>
+//		//  public File inputFile(String where) {
+//		//  }
+//
+//
+//		//  public String inputPath(String where) {
+//		//  }
+//
+//
+//		/// <summary>
+//		/// Takes a path and creates any in-between folders if they don't
+//		/// already exist. Useful when trying to save to a subfolder that
+//		/// may not actually exist.
+//		/// </summary>
+//		public static void createPath(string path)
+//		{
+//			createPath(new File(path));
+//		}
+//
+//
+//		public static void createPath(File file)
+//		{
+//			try
+//			{
+//				string parent = file.Parent;
+//				if (parent != null)
+//				{
+//					File unit = new File(parent);
+//					if (!unit.exists())
+//					{
+//						unit.mkdirs();
+//					}
+//				}
+//			}
+//			catch (SecurityException)
+//			{
+//				Console.Error.WriteLine("You don't have permissions to create " + file.AbsolutePath);
+//			}
+//		}
+//
+//
+//		public static string getExtension(string filename)
+//		{
+//			string extension;
+//
+//			string lower = filename.ToLower();
+//			int dot = filename.LastIndexOf('.');
+//			if (dot == -1)
+//			{
+//				extension = "unknown"; // no extension found
+//			}
+//			extension = lower.Substring(dot + 1);
+//
+//			// check for, and strip any parameters on the url, i.e.
+//			// filename.jpg?blah=blah&something=that
+//			int question = extension.IndexOf('?');
+//			if (question != -1)
+//			{
+//				extension = extension.Substring(0, question);
+//			}
+//
+//			return extension;
+//		}
+//
 
 		//////////////////////////////////////////////////////////////
 
@@ -10022,155 +10044,156 @@ namespace processing.core
 			return outgoing;
 		}
 
-
-		protected internal static Dictionary<string, Regex> matchPatterns;
-
-		internal static Pattern matchPattern(string regexp)
-		{
-			Pattern p = null;
-			if (matchPatterns == null)
-			{
-				matchPatterns = new Dictionary<string, Pattern>();
-			}
-			else
-			{
-				p = matchPatterns[regexp];
-			}
-			if (p == null)
-			{
-				if (matchPatterns.Count == 10)
-				{
-					// Just clear out the match patterns here if more than 10 are being
-					// used. It's not terribly efficient, but changes that you have >10
-					// different match patterns are very slim, unless you're doing
-					// something really tricky (like custom match() methods), in which
-					// case match() won't be efficient anyway. (And you should just be
-					// using your own Java code.) The alternative is using a queue here,
-					// but that's a silly amount of work for negligible benefit.
-					matchPatterns.Clear();
-				}
-				p = Pattern.compile(regexp, Pattern.MULTILINE | Pattern.DOTALL);
-				matchPatterns[regexp] = p;
-			}
-			return p;
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from match.xml )
-		///
-		/// The match() function is used to apply a regular expression to a piece of
-		/// text, and return matching groups (elements found inside parentheses) as
-		/// a String array. No match will return null. If no groups are specified in
-		/// the regexp, but the sequence matches, an array of length one (with the
-		/// matched text as the first element of the array) will be returned.<br />
-		/// <br />
-		/// To use the function, first check to see if the result is null. If the
-		/// result is null, then the sequence did not match. If the sequence did
-		/// match, an array is returned.
-		/// If there are groups (specified by sets of parentheses) in the regexp,
-		/// then the contents of each will be returned in the array.
-		/// Element [0] of a regexp match returns the entire matching string, and
-		/// the match groups start at element [1] (the first group is [1], the
-		/// second [2], and so on).<br />
-		/// <br />
-		/// The syntax can be found in the reference for Java's <a
-		/// href="http://download.oracle.com/javase/6/docs/api/">Pattern</a> class.
-		/// For regular expression syntax, read the <a
-		/// href="http://download.oracle.com/javase/tutorial/essential/regex/">Java
-		/// Tutorial</a> on the topic.
-		///
-		/// ( end auto-generated )
-		/// @webref data:string_functions </summary>
-		/// <param name="str"> the String to be searched </param>
-		/// <param name="regexp"> the regexp to be used for matching </param>
-		/// <seealso cref= PApplet#matchAll(String, String) </seealso>
-		/// <seealso cref= PApplet#split(String, String) </seealso>
-		/// <seealso cref= PApplet#splitTokens(String, String) </seealso>
-		/// <seealso cref= PApplet#join(String[], String) </seealso>
-		/// <seealso cref= PApplet#trim(String) </seealso>
-		public static string[] match(string str, string regexp)
-		{
-			Pattern p = matchPattern(regexp);
-			Matcher m = p.matcher(str);
-			if (m.find())
-			{
-				int count = m.groupCount() + 1;
-				string[] groups = new string[count];
-				for (int i = 0; i < count; i++)
-				{
-					groups[i] = m.group(i);
-				}
-				return groups;
-			}
-			return null;
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from matchAll.xml )
-		///
-		/// This function is used to apply a regular expression to a piece of text,
-		/// and return a list of matching groups (elements found inside parentheses)
-		/// as a two-dimensional String array. No matches will return null. If no
-		/// groups are specified in the regexp, but the sequence matches, a two
-		/// dimensional array is still returned, but the second dimension is only of
-		/// length one.<br />
-		/// <br />
-		/// To use the function, first check to see if the result is null. If the
-		/// result is null, then the sequence did not match at all. If the sequence
-		/// did match, a 2D array is returned. If there are groups (specified by
-		/// sets of parentheses) in the regexp, then the contents of each will be
-		/// returned in the array.
-		/// Assuming, a loop with counter variable i, element [i][0] of a regexp
-		/// match returns the entire matching string, and the match groups start at
-		/// element [i][1] (the first group is [i][1], the second [i][2], and so
-		/// on).<br />
-		/// <br />
-		/// The syntax can be found in the reference for Java's <a
-		/// href="http://download.oracle.com/javase/6/docs/api/">Pattern</a> class.
-		/// For regular expression syntax, read the <a
-		/// href="http://download.oracle.com/javase/tutorial/essential/regex/">Java
-		/// Tutorial</a> on the topic.
-		///
-		/// ( end auto-generated )
-		/// @webref data:string_functions </summary>
-		/// <param name="str"> the String to be searched </param>
-		/// <param name="regexp"> the regexp to be used for matching </param>
-		/// <seealso cref= PApplet#match(String, String) </seealso>
-		/// <seealso cref= PApplet#split(String, String) </seealso>
-		/// <seealso cref= PApplet#splitTokens(String, String) </seealso>
-		/// <seealso cref= PApplet#join(String[], String) </seealso>
-		/// <seealso cref= PApplet#trim(String) </seealso>
-		public static string[][] matchAll(string str, string regexp)
-		{
-			Pattern p = matchPattern(regexp);
-			Matcher m = p.matcher(str);
-			List<string[]> results = new List<string[]>();
-			int count = m.groupCount() + 1;
-			while (m.find())
-			{
-				string[] groups = new string[count];
-				for (int i = 0; i < count; i++)
-				{
-					groups[i] = m.group(i);
-				}
-				results.Add(groups);
-			}
-			if (results.Count == 0)
-			{
-				return null;
-			}
-			//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
-			//ORIGINAL LINE: string[][] matches = new string[results.Count][count];
-			string[][] matches = RectangularArrays.ReturnRectangularStringArray(results.Count, count);
-			for (int i = 0; i < matches.Length; i++)
-			{
-				matches[i] = results[i];
-			}
-			return matches;
-		}
-
+		//TODO: implement regex 
+//
+//		protected internal static Dictionary<string, Regex> matchPatterns;
+//
+//		internal static Pattern matchPattern(string regexp)
+//		{
+//			Pattern p = null;
+//			if (matchPatterns == null)
+//			{
+//				matchPatterns = new Dictionary<string, Pattern>();
+//			}
+//			else
+//			{
+//				p = matchPatterns[regexp];
+//			}
+//			if (p == null)
+//			{
+//				if (matchPatterns.Count == 10)
+//				{
+//					// Just clear out the match patterns here if more than 10 are being
+//					// used. It's not terribly efficient, but changes that you have >10
+//					// different match patterns are very slim, unless you're doing
+//					// something really tricky (like custom match() methods), in which
+//					// case match() won't be efficient anyway. (And you should just be
+//					// using your own Java code.) The alternative is using a queue here,
+//					// but that's a silly amount of work for negligible benefit.
+//					matchPatterns.Clear();
+//				}
+//				p = Pattern.compile(regexp, Pattern.MULTILINE | Pattern.DOTALL);
+//				matchPatterns[regexp] = p;
+//			}
+//			return p;
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from match.xml )
+//		///
+//		/// The match() function is used to apply a regular expression to a piece of
+//		/// text, and return matching groups (elements found inside parentheses) as
+//		/// a String array. No match will return null. If no groups are specified in
+//		/// the regexp, but the sequence matches, an array of length one (with the
+//		/// matched text as the first element of the array) will be returned.<br />
+//		/// <br />
+//		/// To use the function, first check to see if the result is null. If the
+//		/// result is null, then the sequence did not match. If the sequence did
+//		/// match, an array is returned.
+//		/// If there are groups (specified by sets of parentheses) in the regexp,
+//		/// then the contents of each will be returned in the array.
+//		/// Element [0] of a regexp match returns the entire matching string, and
+//		/// the match groups start at element [1] (the first group is [1], the
+//		/// second [2], and so on).<br />
+//		/// <br />
+//		/// The syntax can be found in the reference for Java's <a
+//		/// href="http://download.oracle.com/javase/6/docs/api/">Pattern</a> class.
+//		/// For regular expression syntax, read the <a
+//		/// href="http://download.oracle.com/javase/tutorial/essential/regex/">Java
+//		/// Tutorial</a> on the topic.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref data:string_functions </summary>
+//		/// <param name="str"> the String to be searched </param>
+//		/// <param name="regexp"> the regexp to be used for matching </param>
+//		/// <seealso cref= PApplet#matchAll(String, String) </seealso>
+//		/// <seealso cref= PApplet#split(String, String) </seealso>
+//		/// <seealso cref= PApplet#splitTokens(String, String) </seealso>
+//		/// <seealso cref= PApplet#join(String[], String) </seealso>
+//		/// <seealso cref= PApplet#trim(String) </seealso>
+//		public static string[] match(string str, string regexp)
+//		{
+//			Pattern p = matchPattern(regexp);
+//			Matcher m = p.matcher(str);
+//			if (m.find())
+//			{
+//				int count = m.groupCount() + 1;
+//				string[] groups = new string[count];
+//				for (int i = 0; i < count; i++)
+//				{
+//					groups[i] = m.group(i);
+//				}
+//				return groups;
+//			}
+//			return null;
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from matchAll.xml )
+//		///
+//		/// This function is used to apply a regular expression to a piece of text,
+//		/// and return a list of matching groups (elements found inside parentheses)
+//		/// as a two-dimensional String array. No matches will return null. If no
+//		/// groups are specified in the regexp, but the sequence matches, a two
+//		/// dimensional array is still returned, but the second dimension is only of
+//		/// length one.<br />
+//		/// <br />
+//		/// To use the function, first check to see if the result is null. If the
+//		/// result is null, then the sequence did not match at all. If the sequence
+//		/// did match, a 2D array is returned. If there are groups (specified by
+//		/// sets of parentheses) in the regexp, then the contents of each will be
+//		/// returned in the array.
+//		/// Assuming, a loop with counter variable i, element [i][0] of a regexp
+//		/// match returns the entire matching string, and the match groups start at
+//		/// element [i][1] (the first group is [i][1], the second [i][2], and so
+//		/// on).<br />
+//		/// <br />
+//		/// The syntax can be found in the reference for Java's <a
+//		/// href="http://download.oracle.com/javase/6/docs/api/">Pattern</a> class.
+//		/// For regular expression syntax, read the <a
+//		/// href="http://download.oracle.com/javase/tutorial/essential/regex/">Java
+//		/// Tutorial</a> on the topic.
+//		///
+//		/// ( end auto-generated )
+//		/// @webref data:string_functions </summary>
+//		/// <param name="str"> the String to be searched </param>
+//		/// <param name="regexp"> the regexp to be used for matching </param>
+//		/// <seealso cref= PApplet#match(String, String) </seealso>
+//		/// <seealso cref= PApplet#split(String, String) </seealso>
+//		/// <seealso cref= PApplet#splitTokens(String, String) </seealso>
+//		/// <seealso cref= PApplet#join(String[], String) </seealso>
+//		/// <seealso cref= PApplet#trim(String) </seealso>
+//		public static string[][] matchAll(string str, string regexp)
+//		{
+//			Pattern p = matchPattern(regexp);
+//			Matcher m = p.matcher(str);
+//			List<string[]> results = new List<string[]>();
+//			int count = m.groupCount() + 1;
+//			while (m.find())
+//			{
+//				string[] groups = new string[count];
+//				for (int i = 0; i < count; i++)
+//				{
+//					groups[i] = m.group(i);
+//				}
+//				results.Add(groups);
+//			}
+//			if (results.Count == 0)
+//			{
+//				return null;
+//			}
+//			//JAVA TO C# CONVERTER NOTE: The following call to the 'RectangularArrays' helper class reproduces the rectangular array initialization that is automatic in Java:
+//			//ORIGINAL LINE: string[][] matches = new string[results.Count][count];
+//			string[][] matches = RectangularArrays.ReturnRectangularStringArray(results.Count, count);
+//			for (int i = 0; i < matches.Length; i++)
+//			{
+//				matches[i] = results[i];
+//			}
+//			return matches;
+//		}
+//
 
 
 		//////////////////////////////////////////////////////////////
@@ -12683,22 +12706,24 @@ namespace processing.core
 			g.removeCache(image);
 		}
 
+		// TODO: check if these are necessary
 
-		public virtual PGL beginPGL()
-		{
-			return g.beginPGL();
-		}
-
-
-		public virtual void endPGL()
-		{
-			if (recorder != null)
-			{
-				recorder.endPGL();
-			}
-			g.endPGL();
-		}
-
+//		public virtual PGL beginPGL()
+//		{
+//			//UnityEngine.GL.Begin();
+//			//return g.beginPGL();
+//		}
+//
+//
+//		public virtual void endPGL()
+//		{
+////			if (recorder != null)
+////			{
+////				recorder.endPGL();
+////			}
+////			g.endPGL();
+//		}
+//
 
 		public virtual void flush()
 		{
@@ -13105,98 +13130,99 @@ namespace processing.core
 			return g.createShape(kind, p);
 		}
 
+		// TODO: implmenet Shader Support
 
-		/// <summary>
-		/// ( begin auto-generated from loadShader.xml )
-		///
-		/// This is a new reference entry for Processing 2.0. It will be updated shortly.
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref rendering:shaders </summary>
-		/// <param name="fragFilename"> name of fragment shader file </param>
-		public virtual PShader loadShader(string fragFilename)
-		{
-			return g.loadShader(fragFilename);
-		}
-
-
-		/// <param name="vertFilename"> name of vertex shader file </param>
-		public virtual PShader loadShader(string fragFilename, string vertFilename)
-		{
-			return g.loadShader(fragFilename, vertFilename);
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from shader.xml )
-		///
-		/// This is a new reference entry for Processing 2.0. It will be updated shortly.
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref rendering:shaders </summary>
-		/// <param name="shader"> name of shader file </param>
-		public virtual void shader(PShader shader)
-		{
-			if (recorder != null)
-			{
-				recorder.shader(shader);
-			}
-			g.shader(shader);
-		}
-
-
-		/// <param name="kind"> type of shader, either POINTS, LINES, or TRIANGLES </param>
-		public virtual void shader(PShader shader, int kind)
-		{
-			if (recorder != null)
-			{
-				recorder.shader(shader, kind);
-			}
-			g.shader(shader, kind);
-		}
-
-
-		/// <summary>
-		/// ( begin auto-generated from resetShader.xml )
-		///
-		/// This is a new reference entry for Processing 2.0. It will be updated shortly.
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref rendering:shaders
-		/// </summary>
-		public virtual void resetShader()
-		{
-			if (recorder != null)
-			{
-				recorder.resetShader();
-			}
-			g.resetShader();
-		}
-
-
-		/// <param name="kind"> type of shader, either POINTS, LINES, or TRIANGLES </param>
-		public virtual void resetShader(int kind)
-		{
-			if (recorder != null)
-			{
-				recorder.resetShader(kind);
-			}
-			g.resetShader(kind);
-		}
-
-
-		/// <param name="shader"> the fragment shader to apply </param>
-		public virtual void filter(PShader shader)
-		{
-			if (recorder != null)
-			{
-				recorder.filter(shader);
-			}
-			g.filter(shader);
-		}
+//		/// <summary>
+//		/// ( begin auto-generated from loadShader.xml )
+//		///
+//		/// This is a new reference entry for Processing 2.0. It will be updated shortly.
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref rendering:shaders </summary>
+//		/// <param name="fragFilename"> name of fragment shader file </param>
+//		public virtual PShader loadShader(string fragFilename)
+//		{
+//			return g.loadShader(fragFilename);
+//		}
+//
+//
+//		/// <param name="vertFilename"> name of vertex shader file </param>
+//		public virtual PShader loadShader(string fragFilename, string vertFilename)
+//		{
+//			return g.loadShader(fragFilename, vertFilename);
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from shader.xml )
+//		///
+//		/// This is a new reference entry for Processing 2.0. It will be updated shortly.
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref rendering:shaders </summary>
+//		/// <param name="shader"> name of shader file </param>
+//		public virtual void shader(PShader shader)
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.shader(shader);
+//			}
+//			g.shader(shader);
+//		}
+//
+//
+//		/// <param name="kind"> type of shader, either POINTS, LINES, or TRIANGLES </param>
+//		public virtual void shader(PShader shader, int kind)
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.shader(shader, kind);
+//			}
+//			g.shader(shader, kind);
+//		}
+//
+//
+//		/// <summary>
+//		/// ( begin auto-generated from resetShader.xml )
+//		///
+//		/// This is a new reference entry for Processing 2.0. It will be updated shortly.
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref rendering:shaders
+//		/// </summary>
+//		public virtual void resetShader()
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.resetShader();
+//			}
+//			g.resetShader();
+//		}
+//
+//
+//		/// <param name="kind"> type of shader, either POINTS, LINES, or TRIANGLES </param>
+//		public virtual void resetShader(int kind)
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.resetShader(kind);
+//			}
+//			g.resetShader(kind);
+//		}
+//
+//
+//		/// <param name="shader"> the fragment shader to apply </param>
+//		public virtual void filter(PShader shader)
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.filter(shader);
+//			}
+//			g.filter(shader);
+//		}
 
 
 		/*
@@ -14508,53 +14534,54 @@ namespace processing.core
 			return g.textDescent();
 		}
 
-
-		/// <summary>
-		/// ( begin auto-generated from textFont.xml )
-		///
-		/// Sets the current font that will be drawn with the <b>text()</b>
-		/// function. Fonts must be loaded with <b>loadFont()</b> before it can be
-		/// used. This font will be used in all subsequent calls to the
-		/// <b>text()</b> function. If no <b>size</b> parameter is input, the font
-		/// will appear at its original size (the size it was created at with the
-		/// "Create Font..." tool) until it is changed with <b>textSize()</b>. <br
-		/// /> <br /> Because fonts are usually bitmaped, you should create fonts at
-		/// the sizes that will be used most commonly. Using <b>textFont()</b>
-		/// without the size parameter will result in the cleanest-looking text. <br
-		/// /><br /> With the default (JAVA2D) and PDF renderers, it's also possible
-		/// to enable the use of native fonts via the command
-		/// <b>hint(ENABLE_NATIVE_FONTS)</b>. This will produce vector text in
-		/// JAVA2D sketches and PDF output in cases where the vector data is
-		/// available: when the font is still installed, or the font is created via
-		/// the <b>createFont()</b> function (rather than the Create Font tool).
-		///
-		/// ( end auto-generated )
-		///
-		/// @webref typography:loading_displaying </summary>
-		/// <param name="which"> any variable of the type PFont </param>
-		/// <seealso cref= PApplet#createFont(String, float, boolean) </seealso>
-		/// <seealso cref= PApplet#loadFont(String) </seealso>
-		/// <seealso cref= PFont </seealso>
-		/// <seealso cref= PGraphics#text(String, float, float) </seealso>
-		public virtual void textFont(PFont which)
-		{
-			if (recorder != null)
-			{
-				recorder.textFont(which);
-			}
-			g.textFont(which);
-		}
-
-
-		/// <param name="size"> the size of the letters in units of pixels </param>
-		public virtual void textFont(PFont which, float size)
-		{
-			if (recorder != null)
-			{
-				recorder.textFont(which, size);
-			}
-			g.textFont(which, size);
-		}
+		// TODO: Font Support
+//
+//		/// <summary>
+//		/// ( begin auto-generated from textFont.xml )
+//		///
+//		/// Sets the current font that will be drawn with the <b>text()</b>
+//		/// function. Fonts must be loaded with <b>loadFont()</b> before it can be
+//		/// used. This font will be used in all subsequent calls to the
+//		/// <b>text()</b> function. If no <b>size</b> parameter is input, the font
+//		/// will appear at its original size (the size it was created at with the
+//		/// "Create Font..." tool) until it is changed with <b>textSize()</b>. <br
+//		/// /> <br /> Because fonts are usually bitmaped, you should create fonts at
+//		/// the sizes that will be used most commonly. Using <b>textFont()</b>
+//		/// without the size parameter will result in the cleanest-looking text. <br
+//		/// /><br /> With the default (JAVA2D) and PDF renderers, it's also possible
+//		/// to enable the use of native fonts via the command
+//		/// <b>hint(ENABLE_NATIVE_FONTS)</b>. This will produce vector text in
+//		/// JAVA2D sketches and PDF output in cases where the vector data is
+//		/// available: when the font is still installed, or the font is created via
+//		/// the <b>createFont()</b> function (rather than the Create Font tool).
+//		///
+//		/// ( end auto-generated )
+//		///
+//		/// @webref typography:loading_displaying </summary>
+//		/// <param name="which"> any variable of the type PFont </param>
+//		/// <seealso cref= PApplet#createFont(String, float, boolean) </seealso>
+//		/// <seealso cref= PApplet#loadFont(String) </seealso>
+//		/// <seealso cref= PFont </seealso>
+//		/// <seealso cref= PGraphics#text(String, float, float) </seealso>
+//		public virtual void textFont(PFont which)
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.textFont(which);
+//			}
+//			g.textFont(which);
+//		}
+//
+//
+//		/// <param name="size"> the size of the letters in units of pixels </param>
+//		public virtual void textFont(PFont which, float size)
+//		{
+//			if (recorder != null)
+//			{
+//				recorder.textFont(which, size);
+//			}
+//			g.textFont(which, size);
+//		}
 
 
 		/// <summary>
